@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-primary: #F5F5F2;
+    --text-primary: #111111;
+    --text-muted: #6B6B67;
+    --bg-secondary: #E8E8E3;
+    --border-subtle: #D8D8D2;
+    --accent: #C7FF3D;
+    --accent-text: #111111;
+  }
+
+  .dark {
+    --bg-primary: #111111;
+    --text-primary: #F5F5F2;
+    --text-muted: #A3A39D;
+    --bg-secondary: #1C1C1A;
+    --border-subtle: #262624;
+    --accent: #C7FF3D;
+    --accent-text: #111111;
+  }
+
+  * {
+    border-color: var(--border-subtle);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+.font-serif {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Color utility classes for strict theme mapping */
+.bg-north-bg {
+  background-color: var(--bg-primary);
+}
+
+.text-north-primary {
+  color: var(--text-primary);
+}
+
+.text-north-muted {
+  color: var(--text-muted);
+}
+
+.bg-north-surface {
+  background-color: var(--bg-secondary);
+}
+
+.border-north-border {
+  border-color: var(--border-subtle);
+}
+
+.bg-north-accent {
+  background-color: var(--accent);
+}
+
+.text-north-accent {
+  color: var(--accent);
+}
+
+.border-north-accent {
+  border-color: var(--accent);
+}
+
+/* Custom editorial selections & scrollbars */
+::selection {
+  background-color: var(--accent);
+  color: #111111;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

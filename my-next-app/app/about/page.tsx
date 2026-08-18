@@ -1,0 +1,156 @@
+import React from "react";
+import Image from "next/image";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
+import { Stats } from "@/components/sections/Stats";
+import { MOCK_TEAM, MOCK_PROCESS } from "@/lib/mock-data";
+import { CTA } from "@/components/sections/CTA";
+import { Globe, ExternalLink, Share2 } from "lucide-react";
+
+export default function AboutPage() {
+  return (
+    <>
+      {/* Hero Statement */}
+      <Section className="pt-32 sm:pt-40 md:pt-48 pb-16">
+        <Container>
+          <Reveal>
+            <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D] mb-4 block">
+              ABOUT NORTHSTAR
+            </span>
+            <h1 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-north-primary font-normal leading-[1.02] tracking-tight max-w-5xl mb-12">
+              We are an independent digital agency bridging editorial art direction & software precision.
+            </h1>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="relative w-full aspect-[21/9] rounded-sm overflow-hidden border border-north-border bg-north-surface mb-16">
+              <Image
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop"
+                alt="Northstar Agency Team Studio"
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+              />
+            </div>
+          </Reveal>
+
+          {/* Agency Philosophy & Narrative */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-5">
+              <h2 className="font-serif text-3xl sm:text-4xl text-north-primary font-normal leading-tight">
+                Built on conviction, restraint, and obsessive craft.
+              </h2>
+            </div>
+            <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-north-muted leading-relaxed">
+              <p>
+                Founded in 2014, Northstar was built to offer an alternative to traditional multi-tiered agencies and commodity template factories. We operate as a focused partner for leaders who demand world-class execution.
+              </p>
+              <p>
+                We believe that software should be beautiful, fast, and human. We don&apos;t build disposable marketing sites — we architect enduring digital assets that elevate market positioning and drive measurable business results.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* Stats Block */}
+      <Stats />
+
+      {/* Team Grid */}
+      <Section id="team">
+        <Container>
+          <SectionHeading
+            label="LEADERSHIP"
+            title="The people behind the products."
+            description="Our multidisciplinary team unites design directors, full-stack engineers, and product strategists."
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {MOCK_TEAM.map((member, idx) => (
+              <Reveal key={member.id} delay={0.1 * idx}>
+                <div className="group flex flex-col bg-north-surface border border-north-border rounded-sm overflow-hidden p-4 transition-all duration-300 hover:border-north-primary">
+                  <div className="relative aspect-[4/5] w-full rounded-sm overflow-hidden bg-north-bg mb-4">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  </div>
+
+                  <h3 className="font-serif text-2xl text-north-primary font-normal">
+                    {member.name}
+                  </h3>
+                  <p className="text-xs font-mono text-[#C7FF3D] font-medium mb-2">
+                    {member.role}
+                  </p>
+                  <p className="text-xs text-north-muted leading-relaxed line-clamp-3 mb-4">
+                    {member.bio}
+                  </p>
+
+                  <div className="flex items-center gap-3 pt-3 border-t border-north-border text-north-muted">
+                    {member.social.linkedin && (
+                      <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-north-primary" title="LinkedIn">
+                        <Globe className="w-4 h-4" />
+                      </a>
+                    )}
+                    {member.social.twitter && (
+                      <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-north-primary" title="Twitter / X">
+                        <Share2 className="w-4 h-4" />
+                      </a>
+                    )}
+                    {member.social.github && (
+                      <a href={member.social.github} target="_blank" rel="noopener noreferrer" className="hover:text-north-primary" title="GitHub">
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      {/* Working Process 01-05 */}
+      <Section className="bg-north-surface border-y border-north-border">
+        <Container>
+          <SectionHeading
+            label="WORKING PROCESS"
+            title="How we partner with clients."
+            description="Transparent, collaborative, and structured for maximum momentum from Day 1."
+          />
+
+          <div className="space-y-8 mt-12">
+            {MOCK_PROCESS.map((step) => (
+              <Reveal key={step.number}>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start border-b border-north-border pb-8">
+                  <div className="lg:col-span-2 font-mono text-xl font-bold text-[#C7FF3D]">
+                    {step.number}
+                  </div>
+                  <div className="lg:col-span-4">
+                    <h3 className="font-serif text-3xl text-north-primary font-normal mb-1">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-north-muted font-medium">
+                      {step.subtitle}
+                    </p>
+                  </div>
+                  <div className="lg:col-span-6 text-sm text-north-muted leading-relaxed">
+                    {step.description}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <CTA />
+    </>
+  );
+}
