@@ -22,6 +22,8 @@ export interface CaseStudy {
   summary: string;
   coverImage: string;
   heroImage: string;
+  videoUrl?: string;
+  gifUrl?: string;
   challenge: string;
   approach: string;
   solution: string;

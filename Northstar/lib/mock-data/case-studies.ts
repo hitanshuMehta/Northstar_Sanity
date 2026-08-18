@@ -9,8 +9,9 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     category: "Fintech Platform",
     year: "2024",
     summary: "A complete brand transformation and web application redesign that elevated Orbit's market perception and unlocked $1.2B in new assets under management.",
-    coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop",
-    heroImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop",
+    coverImage: "/images/orbit-finance.jpg",
+    heroImage: "/images/orbit-finance.jpg",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-data-41539-large.mp4",
     challenge: "Orbit Finance possessed market-leading algorithms and deep liquidity pools, but their digital footprint looked legacy. Enterprise asset managers hesitated during procurement due to an outdated user interface that failed to convey security, speed, and mathematical rigor.",
     approach: "We conducted 28 in-depth interviews with portfolio managers and quantitative analysts. We uncovered that speed of execution and data clarity were non-negotiable. We stripped away visual noise and designed an editorial, ultra-responsive dashboard framework built around real-time WebSocket feeds.",
     solution: "Northstar created a unified visual system across marketing touchpoints and web applications. Utilizing custom WebGL data visualizations, high-contrast typography, and a low-latency UI architecture, Orbit Finance transformed from a legacy platform into the benchmark for modern wealth tools.",
@@ -25,9 +26,9 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
       ]
     },
     galleryImages: [
+      "/images/orbit-finance.jpg",
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1200&auto=format&fit=crop"
     ],
     testimonial: {
       quote: "Northstar didn't just redesign our website. They helped us rethink how customers experience our entire product architecture.",
@@ -48,8 +49,9 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     category: "Digital Healthcare",
     year: "2024",
     summary: "Designing an intuitive, calming patient experience and clinical dashboard that reduced patient onboarding drop-offs by 62%.",
-    coverImage: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1600&auto=format&fit=crop",
-    heroImage: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=2000&auto=format&fit=crop",
+    coverImage: "/images/noma-health.jpg",
+    heroImage: "/images/noma-health.jpg",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-futuristic-hologram-technology-animation-43308-large.mp4",
     challenge: "Preventative health monitoring requires patients to complete complex biometrics intake forms. Noma's legacy funnel suffered a 58% abandonment rate prior to consultation booking.",
     approach: "We redesigned the intake workflow into micro-steps with ambient progressive disclosure, warm editorial typography, and reassuring feedback micro-animations.",
     solution: "A mobile-first web app paired with an efficient practitioner dashboard that streamlines patient review time from 15 minutes down to 4 minutes.",
@@ -64,8 +66,8 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
       ]
     },
     galleryImages: [
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?q=80&w=1200&auto=format&fit=crop"
+      "/images/noma-health.jpg",
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop"
     ],
     testimonial: {
       quote: "The Northstar team possesses a rare balance: deep engineering discipline combined with world-class editorial aesthetic.",
@@ -86,8 +88,9 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     category: "E-Commerce",
     year: "2023",
     summary: "Architecting a headless e-commerce store with sub-second page loads and bespoke editorial layout components.",
-    coverImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600&auto=format&fit=crop",
     heroImage: "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2000&auto=format&fit=crop",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-fashion-model-in-front-of-a-light-wall-41618-large.mp4",
     challenge: "Aster needed to present luxury physical garments with high-resolution imagery and immersive video without sacrificing mobile performance or SEO rankings.",
     approach: "We built a custom Next.js storefront backed by Next.js Server Components, incremental static regeneration (ISR), and localized multi-currency routing.",
     solution: "An immersive e-commerce experience that feels like flipping through a physical fashion monograph while providing lightning-fast cart transitions.",
@@ -124,8 +127,9 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     category: "Developer Tools",
     year: "2023",
     summary: "Creating a comprehensive component library and interactive documentation experience for over 45,000 active developers.",
-    coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop",
-    heroImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2000&auto=format&fit=crop",
+    coverImage: "/images/design-system.jpg",
+    heroImage: "/images/design-system.jpg",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-lines-of-code-on-a-computer-screen-41221-large.mp4",
     challenge: "Kin OS had fragmented UI components across 4 different engineering repos, causing developer friction and brand inconsistency.",
     approach: "We audited 300+ existing components, unified token structures, and built an open-source documentation engine with live code previews.",
     solution: "A sleek, dark-mode first design system that accelerated internal feature shipment by 40% and improved third-party ecosystem adoption.",

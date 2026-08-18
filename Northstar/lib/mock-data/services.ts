@@ -16,7 +16,7 @@ export const MOCK_SERVICES: Service[] = [
     deliverables: [
       { title: "Strategic Artifacts", items: ["Product Vision Monograph", "Brand Messaging Guide", "UX Benchmark Audit", "Content Taxonomy System"] }
     ],
-    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/hero-studio.jpg",
     relatedCaseStudies: ["orbit-finance", "what-makes-a-digital-product-memorable"]
   },
   {
@@ -34,7 +34,7 @@ export const MOCK_SERVICES: Service[] = [
     deliverables: [
       { title: "Design Systems", items: ["Figma Enterprise Library", "Interactive Motion Guidelines", "Iconography & Asset Suite", "Design Token Specs"] }
     ],
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/design-system.jpg",
     relatedCaseStudies: ["noma-health", "form-studio"]
   },
   {
@@ -52,7 +52,7 @@ export const MOCK_SERVICES: Service[] = [
     deliverables: [
       { title: "Engineering Assets", items: ["Clean Next.js Codebase", "Sanity Studio Studio CMS", "CI/CD Deployment Pipeline", "Technical Architecture Docs"] }
     ],
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/craft-philosophy.jpg",
     relatedCaseStudies: ["orbit-finance", "kin-os"]
   },
   {
@@ -70,7 +70,7 @@ export const MOCK_SERVICES: Service[] = [
     deliverables: [
       { title: "Growth Engine", items: ["Technical SEO Audit & Fixes", "CRO Experiment Roadmap", "Analytics & Conversion Dashboard", "Monthly Iteration Sprints"] }
     ],
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/orbit-finance.jpg",
     relatedCaseStudies: ["aster-commerce", "luma-cloud"]
   }
 ];

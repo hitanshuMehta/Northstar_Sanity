@@ -27,7 +27,7 @@ export default function AboutPage() {
           <Reveal delay={0.1}>
             <div className="relative w-full aspect-[21/9] rounded-sm overflow-hidden border border-north-border bg-north-surface mb-16">
               <Image
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop"
+                src="/images/hero-studio.jpg"
                 alt="Northstar Agency Team Studio"
                 fill
                 priority

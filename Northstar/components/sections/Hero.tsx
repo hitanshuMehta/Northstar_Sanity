@@ -1,12 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Play, Pause } from "lucide-react";
 import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
 
 export function Hero() {
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+
   return (
     <section className="relative w-full pt-32 sm:pt-40 md:pt-48 pb-16 md:pb-24 overflow-hidden">
       <Container>
@@ -18,7 +21,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex items-center gap-2 mb-6 sm:mb-8"
           >
-            <span className="w-2 h-2 rounded-full bg-[#C7FF3D]" />
+            <span className="w-2 h-2 rounded-full bg-[#C7FF3D] animate-pulse" />
             <span className="text-xs sm:text-sm font-semibold tracking-widest uppercase text-north-muted">
               DIGITAL PRODUCTS / STRATEGY / EXPERIENCE
             </span>
@@ -60,24 +63,59 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Editorial Hero Visual with Subtle Zoom Animation */}
+          {/* Editorial Hero Visual with Dynamic Video & Image Showcase */}
           <motion.div
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-sm overflow-hidden border border-north-border bg-north-surface"
+            className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-sm overflow-hidden border border-north-border bg-north-surface group"
           >
-            <Image
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop"
-              alt="Northstar Design Studio"
-              fill
-              priority
-              className="object-cover transition-transform duration-700 hover:scale-105"
-              sizes="(max-width: 1280px) 100vw, 1280px"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center text-xs text-white/80 uppercase tracking-widest font-mono">
-              <span>DESIGN STUDIO / NEW YORK</span>
+            {isPlayingVideo ? (
+              <video
+                src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-data-41539-large.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Image
+                src="/images/hero-studio.jpg"
+                alt="Northstar Design Studio"
+                fill
+                priority
+                className="object-cover transition-transform duration-700 hover:scale-105"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            
+            {/* Top Interactive Reel Toggle Button */}
+            <div className="absolute top-4 right-4 z-20">
+              <button
+                onClick={() => setIsPlayingVideo(!isPlayingVideo)}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-xs font-mono font-medium text-white hover:bg-black/90 hover:border-[#C7FF3D] transition-all duration-300 shadow-lg cursor-pointer"
+              >
+                {isPlayingVideo ? (
+                  <>
+                    <Pause className="w-3.5 h-3.5 text-[#C7FF3D]" />
+                    <span>PAUSE REEL</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 text-[#C7FF3D] fill-[#C7FF3D]" />
+                    <span>PLAY REEL</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center text-xs text-white/90 uppercase tracking-widest font-mono pointer-events-none z-10">
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C7FF3D] animate-ping" />
+                DESIGN STUDIO / NEW YORK
+              </span>
               <span>EST. 2014</span>
             </div>
           </motion.div>

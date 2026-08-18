@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import { CaseStudy } from "@/lib/types";
 import { Badge } from "../ui/Badge";
 
@@ -18,6 +17,8 @@ export function CaseStudyCard({
   caseStudy,
   aspectRatio = "video",
 }: CaseStudyCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   const aspectClasses = {
     video: "aspect-[16/10]",
     square: "aspect-square",
@@ -25,27 +26,50 @@ export function CaseStudyCard({
   }[aspectRatio];
 
   return (
-    <Link href={`/work/${caseStudy.slug}`} className="group block w-full">
+    <Link
+      href={`/work/${caseStudy.slug}`}
+      className="group block w-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <article className="flex flex-col gap-6 w-full">
-        {/* Cover Image Container */}
+        {/* Cover Image Container with Motion Video Preview */}
         <div
           className={`relative w-full ${aspectClasses} rounded-sm overflow-hidden bg-north-surface border border-north-border`}
         >
-          <Image
-            src={caseStudy.coverImage}
-            alt={caseStudy.title}
-            fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          {caseStudy.videoUrl && isHovered ? (
+            <video
+              src={caseStudy.videoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover transition-transform duration-700 ease-out scale-105"
+            />
+          ) : (
+            <Image
+              src={caseStudy.coverImage}
+              alt={caseStudy.title}
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
           
           {/* Top Info overlay */}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10 pointer-events-none">
             <Badge variant="accent">{caseStudy.category}</Badge>
-            <span className="text-xs font-mono font-medium px-2.5 py-1 bg-black/60 backdrop-blur-md text-white rounded-full">
-              {caseStudy.year}
-            </span>
+            <div className="flex items-center gap-2">
+              {caseStudy.videoUrl && (
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 bg-[#C7FF3D] text-black rounded-full flex items-center gap-1">
+                  <Play className="w-2.5 h-2.5 fill-black" /> MOTION
+                </span>
+              )}
+              <span className="text-xs font-mono font-medium px-2.5 py-1 bg-black/60 backdrop-blur-md text-white rounded-full">
+                {caseStudy.year}
+              </span>
+            </div>
           </div>
 
           {/* Floating Arrow Badge */}

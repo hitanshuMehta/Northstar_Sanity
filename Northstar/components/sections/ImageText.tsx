@@ -8,6 +8,7 @@ import { Reveal } from "../ui/Reveal";
 interface ImageTextProps {
   imageSrc?: string;
   imageAlt?: string;
+  videoSrc?: string;
   quote?: string;
   supportingText?: string;
   ctaText?: string;
@@ -16,8 +17,9 @@ interface ImageTextProps {
 }
 
 export function ImageText({
-  imageSrc = "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=1600&auto=format&fit=crop",
+  imageSrc = "/images/craft-philosophy.jpg",
   imageAlt = "Editorial craft at Northstar",
+  videoSrc,
   quote = "Good digital products are felt before they're understood.",
   supportingText = "Behind every seamless transition and effortless interaction lies an obsession with nuance. We align human intuition with software precision to craft digital products that resonate on a deeper level.",
   ctaText = "Learn about our approach",
@@ -30,21 +32,33 @@ export function ImageText({
     <Section className="bg-north-surface/50 border-y border-north-border">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Image Column */}
+          {/* Image/Video Column */}
           <div
             className={`lg:col-span-6 ${
               isImageLeft ? "order-1" : "order-1 lg:order-2"
             }`}
           >
             <Reveal>
-              <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-sm overflow-hidden border border-north-border bg-north-surface">
-                <Image
-                  src={imageSrc}
-                  alt={imageAlt}
-                  fill
-                  className="object-cover transition-transform duration-700 hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
+              <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-sm overflow-hidden border border-north-border bg-north-surface group shadow-xl">
+                {videoSrc ? (
+                  <video
+                    src={videoSrc}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={imageSrc}
+                    alt={imageAlt}
+                    fill
+                    className="object-cover transition-transform duration-700 hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
               </div>
             </Reveal>
           </div>
