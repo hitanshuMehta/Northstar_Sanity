@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   description: "Northstar partners with ambitious companies to design, build and scale digital products that move businesses forward.",
   keywords: ["digital agency", "product design", "Next.js development", "editorial web design", "Sanity CMS architecture"],
   authors: [{ name: "Northstar Agency" }],
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     title: "Northstar — Digital Products / Strategy / Experience",
     description: "Northstar partners with ambitious companies to design, build and scale digital products that move businesses forward.",
