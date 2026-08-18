@@ -96,24 +96,22 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           {/* Large Hero Media (Video / Image) */}
           <Reveal delay={0.2}>
             <div className="relative w-full aspect-[16/9] rounded-sm overflow-hidden border border-north-border bg-north-surface mb-20 group shadow-2xl">
-              {study.videoUrl ? (
+              <Image
+                src={study.heroImage}
+                alt={study.title}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+              />
+              {study.videoUrl && (
                 <video
                   src={study.videoUrl}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  poster={study.heroImage}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Image
-                  src={study.heroImage}
-                  alt={study.title}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1280px) 100vw, 1280px"
+                  className="absolute inset-0 w-full h-full object-cover opacity-90 transition-opacity duration-700 hover:opacity-100"
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />

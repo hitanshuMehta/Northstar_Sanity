@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { CaseStudy } from "@/lib/types";
 import { Badge } from "../ui/Badge";
 
@@ -18,6 +18,8 @@ export function CaseStudyCard({
   aspectRatio = "video",
 }: CaseStudyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const aspectClasses = {
     video: "aspect-[16/10]",
@@ -30,40 +32,55 @@ export function CaseStudyCard({
       href={`/work/${caseStudy.slug}`}
       className="group block w-full"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsVideoPlaying(false);
+      }}
     >
       <article className="flex flex-col gap-6 w-full">
-        {/* Cover Image Container with Motion Video Preview */}
+        {/* Cover Image Container with Safe Motion Video Overlay */}
         <div
           className={`relative w-full ${aspectClasses} rounded-sm overflow-hidden bg-north-surface border border-north-border`}
         >
-          {caseStudy.videoUrl && isHovered ? (
+          {/* Base Image is ALWAYS rendered to prevent black boxes */}
+          <Image
+            src={caseStudy.coverImage}
+            alt={caseStudy.title}
+            fill
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+
+          {/* Video Overlay on top - Fades in ONLY when video is actually playing */}
+          {caseStudy.videoUrl && !videoError && isHovered && (
             <video
               src={caseStudy.videoUrl}
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover transition-transform duration-700 ease-out scale-105"
-            />
-          ) : (
-            <Image
-              src={caseStudy.coverImage}
-              alt={caseStudy.title}
-              fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onPlaying={() => setIsVideoPlaying(true)}
+              onError={() => setVideoError(true)}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
+                isVideoPlaying ? "opacity-100 scale-105" : "opacity-0"
+              }`}
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-          
+
+          {/* Dark Overlay Gradient on Hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+          {/* Subtle sheen highlight animation on hover */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+
           {/* Top Info overlay */}
           <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10 pointer-events-none">
             <Badge variant="accent">{caseStudy.category}</Badge>
             <div className="flex items-center gap-2">
               {caseStudy.videoUrl && (
-                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 bg-[#C7FF3D] text-black rounded-full flex items-center gap-1">
-                  <Play className="w-2.5 h-2.5 fill-black" /> MOTION
+                <span className="text-[10px] font-mono font-semibold px-2.5 py-1 bg-black/70 backdrop-blur-md text-[#C7FF3D] border border-[#C7FF3D]/30 rounded-full flex items-center gap-1.5 shadow-md">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C7FF3D] animate-pulse" />
+                  REEL
                 </span>
               )}
               <span className="text-xs font-mono font-medium px-2.5 py-1 bg-black/60 backdrop-blur-md text-white rounded-full">
