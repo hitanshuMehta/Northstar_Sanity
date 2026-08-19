@@ -76,19 +76,17 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                   <span className="text-xs font-mono uppercase text-north-muted block mb-1">YEAR</span>
                   <span className="font-medium text-north-primary text-base">{study.year}</span>
                 </div>
-                {study.liveUrl && (
-                  <div className="pt-2 border-t border-north-border">
-                    <a
-                      href={study.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-north-primary hover:text-north-accent transition-colors"
-                    >
-                      <span>Visit Live Website</span>
-                      <ArrowUpRight className="w-4 h-4" />
-                    </a>
-                  </div>
-                )}
+                <div className="pt-4 border-t border-north-border">
+                  <a
+                    href="https://google.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/btn inline-flex items-center justify-between w-full px-5 py-3.5 rounded-sm bg-[#C7FF3D] text-[#111111] text-xs font-bold uppercase tracking-wider hover:bg-[#b5f228] hover:shadow-lg hover:shadow-[#C7FF3D]/25 border border-[#C7FF3D] transition-all duration-300 shadow-md cursor-pointer"
+                  >
+                    <span>Visit Live Website</span>
+                    <ArrowUpRight className="w-4 h-4 text-[#111111] transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
+                  </a>
+                </div>
               </div>
             </div>
           </Reveal>
@@ -255,8 +253,12 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                 <h3 className="font-serif text-3xl text-north-primary font-normal">
                   Related Work
                 </h3>
-                <Link href="/work" className="text-xs font-semibold tracking-wider uppercase text-north-primary hover:text-north-accent">
-                  View all projects →
+                <Link
+                  href="/work"
+                  className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#C7FF3D] text-[#111111] text-xs font-bold uppercase tracking-wider hover:bg-[#b5f228] hover:shadow-md hover:shadow-[#C7FF3D]/20 border border-[#C7FF3D] transition-all duration-300 shadow-sm"
+                >
+                  <span>View all projects</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#111111] transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
                 </Link>
               </div>
             </Reveal>
