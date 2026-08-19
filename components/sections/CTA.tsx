@@ -22,7 +22,7 @@ export function CTA() {
               Let&apos;s build something meaningful together. We are currently accepting select partnerships for Q3 and Q4.
             </p>
 
-            <Button href="/contact" variant="primary" size="lg" showArrow>
+            <Button href="/contact" variant="primary" size="lg" showArrow className="w-full sm:w-auto">
               Start a conversation
             </Button>
           </div>

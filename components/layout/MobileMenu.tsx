@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "../ui/Button";
 
 interface MobileMenuProps {
@@ -35,10 +35,10 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
           className="fixed inset-0 z-40 bg-north-bg flex flex-col justify-between p-6 pt-24 sm:p-10 sm:pt-28 md:hidden"
         >
           <div className="flex flex-col gap-6">
@@ -53,6 +53,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
                     key={link.href}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
                     transition={{ delay: 0.05 * idx, duration: 0.3 }}
                   >
                     <Link
@@ -62,7 +63,12 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
                         isActive ? "text-north-primary font-normal" : "text-north-muted"
                       }`}
                     >
-                      <span>{link.label}</span>
+                      <span className="flex items-center gap-3">
+                        {isActive && (
+                          <span className="w-2 h-2 rounded-full bg-north-accent animate-pulse" />
+                        )}
+                        <span>{link.label}</span>
+                      </span>
                       <ArrowRight className="w-5 h-5 text-north-muted" />
                     </Link>
                   </motion.div>
@@ -75,7 +81,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
             <Button href="/contact" variant="primary" size="lg" showArrow className="w-full">
               Start a conversation
             </Button>
-            <div className="flex items-center justify-between text-xs text-north-muted">
+            <div className="flex items-center justify-between text-xs text-north-muted font-mono">
               <span>© {new Date().getFullYear()} NORTHSTAR AGENCY</span>
               <span>NEW YORK / LONDON</span>
             </div>

@@ -31,7 +31,7 @@ export function Button({
 }: ButtonProps) {
   const baseClasses = twMerge(
     clsx(
-      "inline-flex items-center justify-center font-medium transition-all duration-300 rounded-sm cursor-pointer select-none",
+      "inline-flex items-center justify-center font-medium whitespace-nowrap transition-all duration-300 rounded-sm cursor-pointer select-none",
       {
         // Variants
         "bg-[#C7FF3D] text-[#111111] hover:bg-[#b5f228] hover:shadow-lg hover:shadow-[#C7FF3D]/20 border border-[#C7FF3D]":
@@ -55,16 +55,27 @@ export function Button({
 
   const content = (
     <>
-      <span>{children}</span>
+      <span className="whitespace-nowrap">{children}</span>
       {showArrow && (
-        <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+        <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 flex-shrink-0" />
       )}
     </>
   );
 
   if (href) {
+    const isWFull = className?.includes("w-full");
+    const isSmAuto = className?.includes("sm:w-auto");
     return (
-      <Link href={href} target={target} rel={rel} className="inline-block group">
+      <Link
+        href={href}
+        target={target}
+        rel={rel}
+        className={twMerge(
+          "inline-block group",
+          isWFull && "w-full",
+          isSmAuto && "sm:w-auto"
+        )}
+      >
         <motion.div
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.98 }}

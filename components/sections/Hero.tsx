@@ -45,7 +45,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="md:col-span-8 text-lg sm:text-xl md:text-2xl text-north-muted font-normal leading-relaxed"
+              className="md:col-span-7 text-lg sm:text-xl md:text-2xl text-north-muted font-normal leading-relaxed"
             >
               Northstar partners with ambitious companies to design, build and scale digital products that people actually want to use.
             </motion.p>
@@ -54,12 +54,12 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="md:col-span-4 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4"
+              className="md:col-span-5 flex flex-col sm:flex-row gap-3.5 sm:gap-4 items-stretch sm:items-center justify-start lg:justify-end w-full"
             >
-              <Button href="/work" variant="primary" size="lg" showArrow>
+              <Button href="/work" variant="primary" size="lg" showArrow className="w-full sm:w-auto">
                 View our work
               </Button>
-              <Button href="/contact" variant="secondary" size="lg">
+              <Button href="/contact" variant="secondary" size="lg" className="w-full sm:w-auto">
                 Start a conversation
               </Button>
             </motion.div>
