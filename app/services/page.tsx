@@ -28,7 +28,7 @@ export default function ServicesPage() {
               <Reveal key={service.id} delay={0.1 * idx}>
                 <div
                   id={service.id}
-                  className="bg-north-surface border border-north-border rounded-sm p-8 sm:p-12 lg:p-16 transition-all duration-300"
+                  className="scroll-mt-32 sm:scroll-mt-36 md:scroll-mt-40 bg-north-surface border border-north-border rounded-sm p-8 sm:p-12 lg:p-16 transition-all duration-300"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                     {/* Left Column: Number & Title */}

@@ -31,7 +31,7 @@ export function ImageText({
   return (
     <Section className="bg-north-surface/50 border-y border-north-border">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           {/* Image/Video Column */}
           <div
             className={`lg:col-span-6 ${
@@ -39,7 +39,7 @@ export function ImageText({
             }`}
           >
             <Reveal>
-              <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-sm overflow-hidden border border-north-border bg-north-surface group shadow-xl">
+              <div className="relative w-full h-[320px] sm:h-[380px] lg:h-[390px] rounded-sm overflow-hidden border border-north-border bg-north-surface group shadow-xl">
                 {videoSrc ? (
                   <video
                     src={videoSrc}
@@ -65,22 +65,22 @@ export function ImageText({
 
           {/* Text Column */}
           <div
-            className={`lg:col-span-6 ${
+            className={`lg:col-span-6 flex flex-col justify-center ${
               isImageLeft ? "order-2" : "order-2 lg:order-1"
             }`}
           >
             <Reveal delay={0.1}>
-              <div className="flex flex-col items-start gap-6">
+              <div className="flex flex-col items-start gap-5 sm:gap-6 py-2">
                 <span className="text-xs font-semibold tracking-widest uppercase text-north-muted">
                   PHILOSOPHY
                 </span>
-                <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-north-primary leading-[1.1] tracking-tight">
+                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-north-primary leading-[1.08] tracking-tight">
                   &ldquo;{quote}&rdquo;
                 </h2>
-                <p className="text-base sm:text-lg text-north-muted leading-relaxed max-w-xl">
+                <p className="text-sm sm:text-base text-north-muted leading-relaxed max-w-xl">
                   {supportingText}
                 </p>
-                <div className="pt-4">
+                <div className="pt-2 sm:pt-3">
                   <Button href={ctaHref} variant="primary" size="md" showArrow>
                     {ctaText}
                   </Button>

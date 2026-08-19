@@ -34,7 +34,7 @@ export const MOCK_SERVICES: Service[] = [
     deliverables: [
       { title: "Design Systems", items: ["Figma Enterprise Library", "Interactive Motion Guidelines", "Iconography & Asset Suite", "Design Token Specs"] }
     ],
-    image: "/images/design-system.jpg",
+    image: "/images/noma-health.jpg",
     relatedCaseStudies: ["noma-health", "form-studio"]
   },
   {
