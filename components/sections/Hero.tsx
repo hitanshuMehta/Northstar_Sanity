@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section className="relative w-full pt-32 sm:pt-40 md:pt-48 pb-16 md:pb-24 overflow-hidden">
       <Container>
-        <div className="flex flex-col max-w-5xl">
+        <div className="flex flex-col w-full max-w-6xl mx-auto">
           {/* Label */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -112,16 +112,16 @@ export function Hero() {
                   if (videoError) setVideoError(false);
                   setIsPlayingVideo(!isPlayingVideo);
                 }}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-xs font-mono font-medium text-white hover:bg-black/90 hover:border-[#C7FF3D] transition-all duration-300 shadow-lg cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-xs font-mono font-medium text-white hover:bg-black/90 hover:border-north-accent transition-all duration-300 shadow-lg cursor-pointer"
               >
                 {isPlayingVideo ? (
                   <>
-                    <Pause className="w-3.5 h-3.5 text-[#C7FF3D]" />
+                    <Pause className="w-3.5 h-3.5 text-north-accent" />
                     <span>{videoError ? "SHOWCASE IMAGE" : "PAUSE REEL"}</span>
                   </>
                 ) : (
                   <>
-                    <Play className="w-3.5 h-3.5 text-[#C7FF3D] fill-[#C7FF3D]" />
+                    <Play className="w-3.5 h-3.5 text-north-accent fill-north-accent" />
                     <span>PLAY REEL</span>
                   </>
                 )}
@@ -130,7 +130,7 @@ export function Hero() {
 
             <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center text-xs text-white/90 uppercase tracking-widest font-mono pointer-events-none z-10">
               <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C7FF3D] animate-ping" />
+                <span className="w-1.5 h-1.5 rounded-full bg-north-accent animate-ping" />
                 DESIGN STUDIO / NEW YORK
               </span>
               <span>EST. 2014</span>

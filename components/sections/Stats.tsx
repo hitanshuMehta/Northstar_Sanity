@@ -49,16 +49,16 @@ export function Stats() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <Section className="bg-north-surface border-y border-north-border transition-colors">
+    <Section className="py-8 sm:py-10 md:py-12 bg-north-surface border-y border-north-border transition-colors">
       <Container>
-        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {MOCK_STATS.map((stat, idx) => (
             <motion.div
               key={stat.id}
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.6, delay: 0.1 * idx, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="group relative flex flex-col p-6 sm:p-8 rounded-sm bg-north-bg/0 hover:bg-north-bg/60 border border-transparent hover:border-north-border/80 transition-all duration-500 overflow-hidden cursor-default shadow-none hover:shadow-xl"
+              className="group relative flex flex-col p-4 sm:p-5 md:p-6 rounded-sm bg-north-bg/0 hover:bg-north-bg/60 border border-transparent hover:border-north-border/80 transition-all duration-500 overflow-hidden cursor-default shadow-none hover:shadow-xl"
             >
               {/* Left Vertical Accent Line: Animated Grow Top to Bottom on Hover */}
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-north-border/50 group-hover:bg-north-accent transition-colors duration-500">
@@ -66,19 +66,19 @@ export function Stats() {
               </div>
 
               {/* Big Stat Value with Count-Up Entrance & Hover Lift */}
-              <div className="flex items-baseline gap-1 font-serif text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-3 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 origin-left">
+              <div className="flex items-baseline gap-1 font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight mb-2 transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-105 origin-left">
                 <span className="text-north-accent font-medium">
                   <AnimatedCounter value={stat.value} />
                 </span>
               </div>
 
               {/* Label */}
-              <h3 className="text-base sm:text-lg font-medium text-north-primary mb-2 transition-colors duration-300">
+              <h3 className="text-sm sm:text-base font-semibold text-north-primary mb-1.5 transition-colors duration-300">
                 {stat.label}
               </h3>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-north-muted leading-relaxed">
+              <p className="text-xs sm:text-xs text-north-muted leading-relaxed">
                 {stat.description}
               </p>
             </motion.div>

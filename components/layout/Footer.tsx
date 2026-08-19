@@ -25,7 +25,7 @@ export function Footer() {
                 className="group inline-flex items-center gap-3 text-lg font-medium text-north-primary hover:text-north-accent transition-colors"
               >
                 <span>hello@northstar.agency</span>
-                <span className="p-3 rounded-full bg-north-bg border border-north-border group-hover:border-north-accent group-hover:bg-[#C7FF3D] group-hover:text-[#111111] transition-all">
+                <span className="p-3 rounded-full bg-north-bg border border-north-border group-hover:border-north-accent group-hover:bg-north-accent group-hover:text-north-bg transition-all">
                   <ArrowUpRight className="w-5 h-5" />
                 </span>
               </Link>
