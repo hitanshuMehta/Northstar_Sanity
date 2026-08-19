@@ -22,8 +22,8 @@ export function Stats() {
               transition={{ duration: 0.6, delay: 0.1 * idx }}
               className="flex flex-col border-l border-north-border pl-6 sm:pl-8 py-2"
             >
-              <div className="flex items-baseline gap-1 font-serif text-5xl sm:text-6xl lg:text-7xl font-normal text-north-primary tracking-tight mb-3">
-                <span className="text-[#111111] dark:text-[#C7FF3D]">{stat.value}</span>
+              <div className="flex items-baseline gap-1 font-serif text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-3">
+                <span className="text-north-accent font-medium">{stat.value}</span>
               </div>
               <h3 className="text-base sm:text-lg font-medium text-north-primary mb-2">
                 {stat.label}

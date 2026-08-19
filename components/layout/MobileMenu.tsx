@@ -72,7 +72,7 @@ export function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
           </div>
 
           <div className="flex flex-col gap-6 mt-8">
-            <Button href="/contact opacity-90" variant="primary" size="lg" showArrow className="w-full">
+            <Button href="/contact" variant="primary" size="lg" showArrow className="w-full">
               Start a conversation
             </Button>
             <div className="flex items-center justify-between text-xs text-north-muted">

@@ -43,7 +43,7 @@ export function Footer() {
                 className="inline-flex items-center gap-1.5 text-2xl font-bold tracking-tighter text-north-primary uppercase font-sans mb-4"
               >
                 <span>NORTHSTAR</span>
-                <span className="w-2 h-2 rounded-full bg-[#C7FF3D]" />
+                <span className="w-2 h-2 rounded-full bg-north-accent" />
               </Link>
               <p className="text-sm text-north-muted max-w-sm leading-relaxed">
                 Northstar partners with ambitious companies to design, build and scale digital products that move businesses forward.

@@ -53,7 +53,7 @@ export default function InsightsPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 ${
                   selectedCategory === cat
-                    ? "bg-[#C7FF3D] text-[#111111] font-bold shadow-md"
+                    ? "bg-north-primary text-north-bg font-bold shadow-md"
                     : "bg-north-surface text-north-muted hover:text-north-primary border border-north-border"
                 }`}
               >

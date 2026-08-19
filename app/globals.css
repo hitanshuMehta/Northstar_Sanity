@@ -7,8 +7,9 @@
     --text-muted: #6B6B67;
     --bg-secondary: #E8E8E3;
     --border-subtle: #D8D8D2;
-    --accent: #C7FF3D;
-    --accent-text: #111111;
+    --accent: #2E5C00;
+    --accent-btn-bg: #C7FF3D;
+    --accent-btn-text: #111111;
   }
 
   .dark {
@@ -18,7 +19,8 @@
     --bg-secondary: #1C1C1A;
     --border-subtle: #262624;
     --accent: #C7FF3D;
-    --accent-text: #111111;
+    --accent-btn-bg: #C7FF3D;
+    --accent-btn-text: #111111;
   }
 
   * {

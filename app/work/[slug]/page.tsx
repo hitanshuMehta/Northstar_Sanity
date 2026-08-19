@@ -124,7 +124,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               {/* Challenge */}
               <Reveal>
                 <div className="border-t border-north-border pt-10">
-                  <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D] mb-4 block">
+                  <span className="text-xs font-semibold tracking-widest uppercase text-north-accent mb-4 block">
                     01 / THE CHALLENGE
                   </span>
                   <h2 className="font-serif text-3xl sm:text-4xl text-north-primary font-normal mb-6">
@@ -139,7 +139,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               {/* Approach */}
               <Reveal>
                 <div className="border-t border-north-border pt-10">
-                  <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D] mb-4 block">
+                  <span className="text-xs font-semibold tracking-widest uppercase text-north-accent mb-4 block">
                     02 / OUR APPROACH
                   </span>
                   <h2 className="font-serif text-3xl sm:text-4xl text-north-primary font-normal mb-6">
@@ -154,7 +154,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               {/* Solution */}
               <Reveal>
                 <div className="border-t border-north-border pt-10">
-                  <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D] mb-4 block">
+                  <span className="text-xs font-semibold tracking-widest uppercase text-north-accent mb-4 block">
                     03 / THE SOLUTION
                   </span>
                   <h2 className="font-serif text-3xl sm:text-4xl text-north-primary font-normal mb-6">
@@ -172,7 +172,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           <Section className="my-20 bg-north-surface border border-north-border rounded-sm p-8 sm:p-12 lg:p-16">
             <Reveal>
               <div className="flex flex-col items-start gap-4 mb-12">
-                <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D]">
+                <span className="text-xs font-semibold tracking-widest uppercase text-north-accent">
                   MEASURABLE IMPACT
                 </span>
                 <h2 className="font-serif text-4xl sm:text-5xl text-north-primary font-normal">
@@ -186,7 +186,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 border-t border-north-border pt-8">
                 {study.results.stats.map((stat) => (
                   <div key={stat.label} className="flex flex-col">
-                    <span className="font-serif text-5xl sm:text-6xl text-[#111111] dark:text-[#C7FF3D] font-normal mb-2">
+                    <span className="font-serif text-5xl sm:text-6xl text-north-accent font-normal mb-2">
                       {stat.value}
                     </span>
                     <span className="text-base font-semibold text-north-primary mb-1">

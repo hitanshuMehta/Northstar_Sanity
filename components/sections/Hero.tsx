@@ -23,7 +23,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex items-center gap-2 mb-6 sm:mb-8"
           >
-            <span className="w-2 h-2 rounded-full bg-[#C7FF3D] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-north-accent animate-pulse" />
             <span className="text-xs sm:text-sm font-semibold tracking-widest uppercase text-north-muted">
               DIGITAL PRODUCTS / STRATEGY / EXPERIENCE
             </span>

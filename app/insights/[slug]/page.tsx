@@ -106,7 +106,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Article Content Body */}
           <div className="space-y-12 text-base sm:text-lg text-north-primary leading-relaxed font-normal">
             <Reveal>
-              <p className="text-xl sm:text-2xl font-serif leading-relaxed text-north-primary border-l-2 border-[#C7FF3D] pl-6 italic">
+              <p className="text-xl sm:text-2xl font-serif leading-relaxed text-north-primary border-l-2 border-north-accent pl-6 italic">
                 {post.content.introduction}
               </p>
             </Reveal>
@@ -127,7 +127,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.content.keyTakeaway && (
               <Reveal>
                 <div className="bg-north-surface border border-north-border rounded-sm p-6 sm:p-8 my-8">
-                  <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D] block mb-2">
+                  <span className="text-xs font-semibold tracking-widest uppercase text-north-accent block mb-2">
                     KEY TAKEAWAY
                   </span>
                   <p className="font-serif text-xl text-north-primary">
@@ -159,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <h4 className="font-semibold text-north-primary text-base mb-1">
                   Written by {post.author.name}
                 </h4>
-                <p className="text-xs font-mono text-[#C7FF3D] mb-3">
+                <p className="text-xs font-mono text-north-accent mb-3">
                   {post.author.role}
                 </p>
                 <p className="text-xs text-north-muted leading-relaxed">

@@ -23,7 +23,7 @@ export function Badge({
           {
             "bg-north-surface text-north-primary border border-north-border":
               variant === "default",
-            "bg-[#C7FF3D]/10 text-[#111111] dark:text-[#C7FF3D] border border-[#C7FF3D]/30":
+            "bg-north-accent/10 text-north-accent border border-north-accent/30 font-semibold":
               variant === "accent",
             "bg-transparent text-north-muted border border-north-border":
               variant === "outline",

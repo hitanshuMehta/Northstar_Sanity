@@ -16,7 +16,7 @@ export default function AboutPage() {
       <Section className="pt-32 sm:pt-40 md:pt-48 pb-16">
         <Container>
           <Reveal>
-            <span className="text-xs font-semibold tracking-widest uppercase text-[#C7FF3D] mb-4 block">
+            <span className="text-xs font-semibold tracking-widest uppercase text-north-accent mb-4 block">
               ABOUT NORTHSTAR
             </span>
             <h1 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-north-primary font-normal leading-[1.02] tracking-tight max-w-5xl mb-12">
@@ -85,7 +85,7 @@ export default function AboutPage() {
                   <h3 className="font-serif text-2xl text-north-primary font-normal">
                     {member.name}
                   </h3>
-                  <p className="text-xs font-mono text-[#C7FF3D] font-medium mb-2">
+                  <p className="text-xs font-mono text-north-accent font-medium mb-2">
                     {member.role}
                   </p>
                   <p className="text-xs text-north-muted leading-relaxed line-clamp-3 mb-4">
@@ -129,7 +129,7 @@ export default function AboutPage() {
             {MOCK_PROCESS.map((step) => (
               <Reveal key={step.number}>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start border-b border-north-border pb-8">
-                  <div className="lg:col-span-2 font-mono text-xl font-bold text-[#C7FF3D]">
+                  <div className="lg:col-span-2 font-mono text-xl font-bold text-north-accent">
                     {step.number}
                   </div>
                   <div className="lg:col-span-4">

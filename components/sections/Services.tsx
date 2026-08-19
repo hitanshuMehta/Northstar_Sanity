@@ -34,7 +34,7 @@ export function Services() {
                 >
                   <Link href="/services" className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
                     <div className="flex items-baseline gap-6 sm:gap-10">
-                      <span className="font-mono text-sm sm:text-base text-north-muted font-medium group-hover:text-north-primary transition-colors">
+                      <span className="font-mono text-sm sm:text-base text-north-accent font-bold group-hover:text-north-primary transition-colors">
                         {service.number}
                       </span>
                       <div>

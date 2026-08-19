@@ -34,7 +34,7 @@ export default function ServicesPage() {
                     {/* Left Column: Number & Title */}
                     <div className="lg:col-span-5 flex flex-col justify-between">
                       <div>
-                        <span className="font-mono text-sm text-[#C7FF3D] font-bold block mb-4">
+                        <span className="font-mono text-sm text-north-accent font-bold block mb-4">
                           SERVICES / {service.number}
                         </span>
                         <h2 className="font-serif text-4xl sm:text-5xl text-north-primary font-normal leading-tight mb-4">
@@ -66,7 +66,7 @@ export default function ServicesPage() {
                           {service.capabilities.map((cap) => (
                             <div key={cap.title} className="flex flex-col gap-1">
                               <h4 className="text-sm font-semibold text-north-primary flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#C7FF3D]" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-north-accent" />
                                 {cap.title}
                               </h4>
                               <p className="text-xs text-north-muted leading-relaxed">
@@ -89,7 +89,7 @@ export default function ServicesPage() {
                                 key={item}
                                 className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full bg-north-bg border border-north-border text-north-primary"
                               >
-                                <Check className="w-3 h-3 text-[#C7FF3D]" />
+                                <Check className="w-3 h-3 text-north-accent" />
                                 {item}
                               </span>
                             ))}
@@ -118,7 +118,7 @@ export default function ServicesPage() {
             {MOCK_PROCESS.map((step, idx) => (
               <Reveal key={step.number} delay={0.1 * idx}>
                 <div className="flex flex-col border-t border-north-border pt-6">
-                  <span className="font-mono text-xs font-bold text-[#C7FF3D] mb-3">
+                  <span className="font-mono text-xs font-bold text-north-accent mb-3">
                     {step.number}
                   </span>
                   <h3 className="font-serif text-2xl text-north-primary font-normal mb-2">
