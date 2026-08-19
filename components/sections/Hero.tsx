@@ -1,17 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Play, Pause } from "lucide-react";
 import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
 
 export function Hero() {
-  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-
   return (
     <section className="relative w-full pt-32 sm:pt-40 md:pt-48 pb-16 md:pb-24 overflow-hidden">
       <Container>
@@ -65,69 +60,36 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Editorial Hero Visual with Dynamic Video & Image Showcase */}
+          {/* Editorial Hero Autoplay Video Stage */}
           <motion.div
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-sm overflow-hidden border border-north-border bg-north-surface group"
+            className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-sm overflow-hidden border border-north-border bg-north-surface group shadow-2xl"
           >
-            {/* Always rendered base image */}
+            {/* Base Image Fallback */}
             <Image
               src="/images/hero-studio.jpg"
-              alt="Northstar Design Studio"
+              alt="Northstar Design Studio Showcase"
               fill
               priority
-              className={`object-cover transition-transform duration-700 ${
-                isPlayingVideo ? "scale-105" : "group-hover:scale-105"
-              }`}
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
 
-            {/* Video overlay, smoothly fades in when playing */}
-            {isPlayingVideo && !videoError && (
-              <video
-                src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-data-41539-large.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                onPlaying={() => setIsVideoLoaded(true)}
-                onError={() => {
-                  setVideoError(true);
-                  setIsVideoLoaded(false);
-                }}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                  isVideoLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              />
-            )}
+            {/* Seamless Autoplay Video Showcase */}
+            <video
+              src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-data-41539-large.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90"
+            />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
 
-            {/* Dynamic Reel Toggle Button */}
-            <div className="absolute top-4 right-4 z-20">
-              <button
-                onClick={() => {
-                  if (videoError) setVideoError(false);
-                  setIsPlayingVideo(!isPlayingVideo);
-                }}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-xs font-mono font-medium text-white hover:bg-black/90 hover:border-north-accent transition-all duration-300 shadow-lg cursor-pointer"
-              >
-                {isPlayingVideo ? (
-                  <>
-                    <Pause className="w-3.5 h-3.5 text-north-accent" />
-                    <span>{videoError ? "SHOWCASE IMAGE" : "PAUSE REEL"}</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-3.5 h-3.5 text-north-accent fill-north-accent" />
-                    <span>PLAY REEL</span>
-                  </>
-                )}
-              </button>
-            </div>
-
+            {/* Stage Bottom Corner Label */}
             <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center text-xs text-white/90 uppercase tracking-widest font-mono pointer-events-none z-10">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-north-accent animate-ping" />
