@@ -29,7 +29,7 @@ export async function FeaturedWork() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
           {caseStudies.map((study, idx) => (
-            <Reveal key={study.id} delay={0.1 * idx}>
+            <Reveal key={study.id} delay={0.1 * idx} className="h-full">
               <CaseStudyCard caseStudy={study} />
             </Reveal>
           ))}

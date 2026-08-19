@@ -58,7 +58,7 @@ export default function WorkPage() {
           {/* Case Studies Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
             {filteredStudies.map((study, idx) => (
-              <Reveal key={study.id} delay={0.05 * idx}>
+              <Reveal key={study.id} delay={0.05 * idx} className="h-full">
                 <CaseStudyCard caseStudy={study} aspectRatio="video" />
               </Reveal>
             ))}
