@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
@@ -8,7 +10,8 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { MOCK_SERVICES, MOCK_PROCESS } from "@/lib/mock-data";
 import { CTA } from "@/components/sections/CTA";
-import { Check } from "lucide-react";
+import { Check, Compass, Target, Palette, Code2, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function ServicesPage() {
   return (
@@ -105,8 +108,8 @@ export default function ServicesPage() {
         </Container>
       </Section>
 
-      {/* Process Section 01-05 */}
-      <Section className="bg-north-surface border-y border-north-border">
+      {/* Animated Methodology Process Section 01-05 */}
+      <Section className="bg-north-surface/50 border-y border-north-border py-24 sm:py-32">
         <Container>
           <SectionHeading
             label="OUR METHODOLOGY"
@@ -114,29 +117,67 @@ export default function ServicesPage() {
             description="How we move from initial strategic alignment to launch and continuous optimization."
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mt-12">
-            {MOCK_PROCESS.map((step, idx) => (
-              <Reveal key={step.number} delay={0.1 * idx}>
-                <div className="flex flex-col border-t border-north-border pt-6">
-                  <span className="font-mono text-xs font-bold text-north-accent mb-3">
-                    {step.number}
-                  </span>
-                  <h3 className="font-serif text-2xl text-north-primary font-normal mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-north-muted leading-relaxed mb-4">
-                    {step.subtitle}
-                  </p>
-                  <ul className="space-y-1.5 text-[11px] text-north-muted font-mono border-t border-north-border/50 pt-3">
-                    {step.deliverables.slice(0, 3).map((d) => (
-                      <li key={d} className="flex items-center gap-1">
-                        <span>•</span> {d}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-14 sm:mt-20">
+            {MOCK_PROCESS.map((step, idx) => {
+              const stepIcons = [Compass, Target, Palette, Code2, TrendingUp];
+              const IconComponent = stepIcons[idx] || Compass;
+
+              return (
+                <motion.div
+                  key={step.number}
+                  initial={{ opacity: 0, y: 35 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.12 * idx,
+                    ease: [0.21, 0.47, 0.32, 0.98],
+                  }}
+                  whileHover={{ y: -6 }}
+                  className="group relative flex flex-col justify-between h-full bg-north-surface border border-north-border rounded-sm p-6 sm:p-7 transition-all duration-500 hover:border-north-accent/70 hover:shadow-2xl shadow-xl overflow-hidden"
+                >
+                  {/* Signature Electric Lime Top Accent Line */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-north-accent w-full" />
+
+                  <div>
+                    {/* Top Row: Icon Badge & Number */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-10 h-10 rounded-full bg-north-bg border border-north-border text-north-accent flex items-center justify-center group-hover:border-north-accent group-hover:bg-north-accent/10 transition-all duration-300 shadow-sm">
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <span className="font-mono text-xs font-bold text-north-accent tracking-widest">
+                        {step.number}
+                      </span>
+                    </div>
+
+                    {/* Step Title & Subtitle */}
+                    <h3 className="font-serif text-2xl sm:text-3xl text-north-primary font-normal mb-2 group-hover:text-north-accent transition-colors">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-north-muted leading-relaxed mb-6 font-medium">
+                      {step.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Deliverables List */}
+                  <div className="border-t border-north-border/70 pt-4 mt-auto">
+                    <span className="text-[10px] font-mono font-semibold tracking-widest uppercase text-north-muted block mb-3">
+                      DELIVERABLES
+                    </span>
+                    <ul className="space-y-2 text-xs text-north-muted">
+                      {step.deliverables.slice(0, 3).map((d) => (
+                        <li key={d} className="flex items-center gap-2 group/item">
+                          <span className="w-1.5 h-1.5 rounded-full bg-north-accent opacity-50 group-hover/item:opacity-100 group-hover/item:scale-125 transition-all flex-shrink-0" />
+                          <span className="truncate group-hover/item:text-north-primary transition-colors">
+                            {d}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </Container>
       </Section>
