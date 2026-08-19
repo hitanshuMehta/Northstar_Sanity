@@ -81,11 +81,11 @@ export function PostCard({ post, featured = false }: PostCardProps) {
             <span className="font-mono">{post.readTime}</span>
           </div>
 
-          <h3 className="font-serif text-2xl text-north-primary font-normal leading-snug group-hover:text-north-muted transition-colors">
+          <h3 className="font-serif text-xl sm:text-2xl text-north-primary font-normal leading-snug group-hover:text-north-muted transition-colors line-clamp-2 min-h-[3.5rem] sm:min-h-[4rem]">
             {post.title}
           </h3>
 
-          <p className="text-sm text-north-muted leading-relaxed line-clamp-2">
+          <p className="text-sm text-north-muted leading-relaxed line-clamp-2 min-h-[2.5rem]">
             {post.excerpt}
           </p>
         </div>
