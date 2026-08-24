@@ -8,11 +8,14 @@ import { Testimonial } from "@/components/sections/Testimonial";
 import { Results } from "@/components/sections/Results";
 import { Insights } from "@/components/sections/Insights";
 import { CTA } from "@/components/sections/CTA";
+import { getHeroData } from "@/sanity/lib/fetch";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const heroData = await getHeroData();
+
   return (
     <>
-      <Hero />
+      <Hero data={heroData} />
       <LogoCloud />
       <FeaturedWork />
       <Stats />
@@ -25,3 +28,4 @@ export default function HomePage() {
     </>
   );
 }
+
