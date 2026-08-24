@@ -1,8 +1,6 @@
 import { createClient } from "@sanity/client";
 import fs from "fs";
-import path from "path";
 
-// Simple helper to load .env.local if present
 if (fs.existsSync(".env.local")) {
   const envConfig = fs.readFileSync(".env.local", "utf8");
   envConfig.split("\n").forEach((line) => {
@@ -46,10 +44,10 @@ async function seedHero() {
     title: "We build digital experiences that move businesses forward.",
     description:
       "Northstar partners with ambitious companies to design, build and scale digital products that people actually want to use.",
-    primaryCtaLabel: "View our work",
-    primaryCtaLink: "/work",
-    secondaryCtaLabel: "Start a conversation",
-    secondaryCtaLink: "/contact",
+    buttons: [
+      { _key: "btn-1", label: "View our work", link: "/work", variant: "primary", showArrow: true },
+      { _key: "btn-2", label: "Start a conversation", link: "/contact", variant: "secondary", showArrow: false },
+    ],
     videoUrl:
       "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-data-41539-large.mp4",
     locationLabel: "DESIGN STUDIO / NEW YORK",

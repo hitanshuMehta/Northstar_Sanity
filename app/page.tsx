@@ -8,24 +8,39 @@ import { Testimonial } from "@/components/sections/Testimonial";
 import { Results } from "@/components/sections/Results";
 import { Insights } from "@/components/sections/Insights";
 import { CTA } from "@/components/sections/CTA";
-import { getHeroData } from "@/sanity/lib/fetch";
+import {
+  getHeroData,
+  getLogoCloudData,
+  getImageTextData,
+  getResultsData,
+  getCtaData,
+} from "@/sanity/lib/fetch";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
-  const heroData = await getHeroData();
+  const [heroData, logoCloudData, imageTextData, resultsData, ctaData] =
+    await Promise.all([
+      getHeroData(),
+      getLogoCloudData(),
+      getImageTextData(),
+      getResultsData(),
+      getCtaData(),
+    ]);
 
   return (
     <>
       <Hero data={heroData} />
-      <LogoCloud />
+      <LogoCloud data={logoCloudData} />
       <FeaturedWork />
       <Stats />
       <Services />
-      <ImageText />
+      <ImageText data={imageTextData} />
       <Testimonial />
-      <Results />
+      <Results data={resultsData} />
       <Insights />
-      <CTA />
+      <CTA data={ctaData} />
     </>
   );
 }
-

@@ -19,12 +19,13 @@ export function PostCard({ post, featured = false }: PostCardProps) {
         <article className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-north-surface border border-north-border rounded-sm p-6 sm:p-8 lg:p-10 transition-all duration-300 hover:border-north-primary">
           <div className="lg:col-span-7 relative aspect-[16/10] w-full rounded-sm overflow-hidden border border-north-border">
             <Image
-              src={post.coverImage}
-              alt={post.title}
+              src={post.coverImage && post.coverImage.trim() !== "" ? post.coverImage : "/images/hero-studio.jpg"}
+              alt={post.title || "Northstar Article"}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 60vw"
             />
+
           </div>
 
           <div className="lg:col-span-5 flex flex-col items-start gap-4">

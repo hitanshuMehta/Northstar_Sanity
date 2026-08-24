@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/providers";
 import { Sun, Moon, Menu as MenuIcon, X, ArrowRight } from "lucide-react";
+
 import { MobileMenu } from "./MobileMenu";
 
 const NAV_LINKS = [

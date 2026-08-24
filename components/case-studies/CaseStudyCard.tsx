@@ -43,12 +43,13 @@ export function CaseStudyCard({
         >
           {/* Base Image is ALWAYS rendered to prevent black boxes */}
           <Image
-            src={caseStudy.coverImage}
-            alt={caseStudy.title}
+            src={caseStudy.coverImage && caseStudy.coverImage.trim() !== "" ? caseStudy.coverImage : "/images/hero-studio.jpg"}
+            alt={caseStudy.title || "Northstar Case Study"}
             fill
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+
 
           {/* Video Overlay on top - Fades in ONLY when video is actually playing */}
           {caseStudy.videoUrl && !videoError && isHovered && (

@@ -6,6 +6,17 @@ import { MOCK_STATS } from "./stats";
 import { MOCK_TEAM } from "./team";
 import { MOCK_PROCESS } from "./process";
 import { CaseStudy, BlogPost, Service, Testimonial, Stat, TeamMember, ProcessStep } from "../types";
+import {
+  getSanityCaseStudies,
+  getSanityFeaturedCaseStudies,
+  getSanityCaseStudyBySlug,
+  getSanityBlogPosts,
+  getSanityFeaturedBlogPosts,
+  getSanityBlogPostBySlug,
+  getSanityServices,
+  getSanityTestimonials,
+  getSanityStats,
+} from "@/sanity/lib/fetch";
 
 export * from "./case-studies";
 export * from "./blog-posts";
@@ -15,45 +26,45 @@ export * from "./stats";
 export * from "./team";
 export * from "./process";
 
-// Simulated fetchers (later replaceable by GROQ / sanityFetch calls)
 export async function getCaseStudies(): Promise<CaseStudy[]> {
-  return MOCK_CASE_STUDIES;
+  return getSanityCaseStudies();
 }
 
 export async function getFeaturedCaseStudies(): Promise<CaseStudy[]> {
-  return MOCK_CASE_STUDIES.filter((cs) => cs.featured);
+  return getSanityFeaturedCaseStudies();
 }
 
 export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | undefined> {
-  return MOCK_CASE_STUDIES.find((cs) => cs.slug === slug);
+  return getSanityCaseStudyBySlug(slug);
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  return MOCK_BLOG_POSTS;
+  return getSanityBlogPosts();
 }
 
 export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
-  return MOCK_BLOG_POSTS.filter((post) => post.featured);
+  return getSanityFeaturedBlogPosts();
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-  return MOCK_BLOG_POSTS.find((post) => post.slug === slug);
+  return getSanityBlogPostBySlug(slug);
 }
 
 export async function getServices(): Promise<Service[]> {
-  return MOCK_SERVICES;
+  return getSanityServices();
 }
 
 export async function getServiceById(id: string): Promise<Service | undefined> {
-  return MOCK_SERVICES.find((s) => s.id === id);
+  const services = await getSanityServices();
+  return services.find((s) => s.id === id || s.number === id);
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  return MOCK_TESTIMONIALS;
+  return getSanityTestimonials();
 }
 
 export async function getStats(): Promise<Stat[]> {
-  return MOCK_STATS;
+  return getSanityStats();
 }
 
 export async function getTeam(): Promise<TeamMember[]> {
