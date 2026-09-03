@@ -7,6 +7,8 @@ import {
   MOCK_SERVICES,
   MOCK_TESTIMONIALS,
   MOCK_STATS,
+  MOCK_TEAM,
+  MOCK_PROCESS,
 } from "@/lib/mock-data";
 import { CaseStudy, BlogPost, Service, Testimonial, Stat } from "@/lib/types";
 
@@ -14,8 +16,8 @@ import { CaseStudy, BlogPost, Service, Testimonial, Stat } from "@/lib/types";
 export function formatSanityImage(imageField: any, fallbackUrl: string = ""): string {
   if (!imageField) return fallbackUrl;
   if (typeof imageField === "string" && imageField.trim() !== "") return imageField;
-  if (typeof imageField === "object" && imageField.asset) {
-    const built = urlForImage(imageField)?.url();
+  if (typeof imageField === "object") {
+    const built = urlForImage(imageField);
     if (built) return built;
   }
   return fallbackUrl;
@@ -202,7 +204,400 @@ export const DEFAULT_CTA_DATA: CtaData = {
 };
 
 // ----------------------------------------------------
-// Async Fetchers with Instant Revalidation
+// Page-wise Singleton Fetchers
+// ----------------------------------------------------
+
+export async function getHomepageData() {
+  const [heroData, logoCloudData, imageTextData, resultsData, ctaData] = await Promise.all([
+    getHeroData(),
+    getLogoCloudData(),
+    getImageTextData(),
+    getResultsData(),
+    getCtaData(),
+  ]);
+
+  if (!client) {
+    return { heroData, logoCloudData, imageTextData, resultsData, ctaData };
+  }
+
+  try {
+    const data = await client.fetch(queries.homepageQuery, {}, { next: { revalidate: 0 } });
+    if (!data) return { heroData, logoCloudData, imageTextData, resultsData, ctaData };
+
+    return {
+      heroData: data.hero
+        ? {
+            label: data.hero.label || heroData.label,
+            title: data.hero.title || heroData.title,
+            description: data.hero.description || heroData.description,
+            buttons: [
+              {
+                label: data.hero.primaryCtaLabel || "View our work",
+                link: data.hero.primaryCtaLink || "/work",
+                variant: "primary" as const,
+                showArrow: true,
+              },
+              {
+                label: data.hero.secondaryCtaLabel || "Start a conversation",
+                link: data.hero.secondaryCtaLink || "/contact",
+                variant: "secondary" as const,
+                showArrow: false,
+              },
+            ],
+            fallbackImage: formatSanityImage(data.hero.image, heroData.fallbackImage),
+            videoUrl: data.hero.videoUrl || heroData.videoUrl,
+          }
+        : heroData,
+      logoCloudData: data.logoCloud
+        ? {
+            heading: data.logoCloud.heading || logoCloudData.heading,
+            logos: Array.isArray(data.logoCloud.logos) && data.logoCloud.logos.length > 0
+              ? data.logoCloud.logos.map((l: any) => ({
+                  name: l.name || "",
+                  logoImage: formatSanityImage(l.logoImage, ""),
+                  svgCode: l.svgCode,
+                  link: l.link,
+                }))
+              : logoCloudData.logos,
+          }
+        : logoCloudData,
+      imageTextData: data.imageText
+        ? {
+            label: data.imageText.label || imageTextData.label,
+            title: data.imageText.title || imageTextData.title,
+            paragraphs: Array.isArray(data.imageText.paragraphs) && data.imageText.paragraphs.length > 0
+              ? data.imageText.paragraphs
+              : imageTextData.paragraphs,
+            featureImage: formatSanityImage(data.imageText.featureImage, imageTextData.featureImage),
+            quote: data.imageText.quote,
+            quoteAuthor: data.imageText.quoteAuthor,
+            ctaLabel: data.imageText.ctaLabel,
+            ctaLink: data.imageText.ctaLink,
+          }
+        : imageTextData,
+      resultsData: data.resultsSection
+        ? {
+            label: data.resultsSection.label || resultsData.label,
+            title: data.resultsSection.title || resultsData.title,
+            description: data.resultsSection.description || resultsData.description,
+            highlightMetric: data.resultsSection.highlightMetric || resultsData.highlightMetric,
+            highlightLabel: data.resultsSection.highlightLabel || resultsData.highlightLabel,
+            metrics: Array.isArray(data.resultsSection.metrics) && data.resultsSection.metrics.length > 0
+              ? data.resultsSection.metrics
+              : resultsData.metrics,
+          }
+        : resultsData,
+      ctaData: data.cta
+        ? {
+            label: data.cta.label || ctaData.label,
+            title: data.cta.title || ctaData.title,
+            description: data.cta.description || ctaData.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+          }
+        : ctaData,
+    };
+  } catch {
+    return { heroData, logoCloudData, imageTextData, resultsData, ctaData };
+  }
+}
+
+export async function getAboutPageData() {
+  const ctaData = await getCtaData();
+  const defaultAboutData = {
+    hero: {
+      label: "ABOUT NORTHSTAR",
+      headline: "We are an independent digital agency bridging editorial art direction & software precision.",
+      coverImage: "/images/hero-studio.jpg",
+    },
+    philosophy: {
+      headline: "Built on conviction, restraint, and obsessive craft.",
+      paragraphs: [
+        "Founded in 2014, Northstar was built to offer an alternative to traditional multi-tiered agencies and commodity template factories. We operate as a focused partner for leaders who demand world-class execution.",
+        "We believe that software should be beautiful, fast, and human. We don't build disposable marketing sites — we architect enduring digital assets that elevate market positioning and drive measurable business results.",
+      ],
+    },
+    teamMembers: MOCK_TEAM,
+    processSteps: MOCK_PROCESS,
+    ctaData,
+  };
+
+  if (!client) return defaultAboutData;
+
+  try {
+    const data = await client.fetch(queries.aboutPageQuery, {}, { next: { revalidate: 0 } });
+    if (!data) return defaultAboutData;
+
+    return {
+      hero: {
+        label: data.hero?.label || defaultAboutData.hero.label,
+        headline: data.hero?.headline || defaultAboutData.hero.headline,
+        coverImage: formatSanityImage(data.hero?.coverImage, defaultAboutData.hero.coverImage),
+      },
+      philosophy: {
+        headline: data.philosophy?.headline || defaultAboutData.philosophy.headline,
+        paragraphs: Array.isArray(data.philosophy?.paragraphs) && data.philosophy.paragraphs.length > 0
+          ? data.philosophy.paragraphs
+          : defaultAboutData.philosophy.paragraphs,
+      },
+      teamMembers: Array.isArray(data.teamSection?.members) && data.teamSection.members.length > 0
+        ? data.teamSection.members.map((m: any) => ({
+            id: m.id || m._id,
+            name: m.name || "",
+            role: m.role || "",
+            bio: m.bio || "",
+            image: formatSanityImage(m.image, "/images/avatar-1.jpg"),
+            websiteUrl: m.websiteUrl,
+            linkedinUrl: m.linkedinUrl,
+          }))
+        : MOCK_TEAM,
+      processSteps: Array.isArray(data.process?.steps) && data.process.steps.length > 0
+        ? data.process.steps
+        : MOCK_PROCESS,
+      ctaData: data.cta
+        ? {
+            label: data.cta.label || ctaData.label,
+            title: data.cta.title || ctaData.title,
+            description: data.cta.description || ctaData.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+          }
+        : ctaData,
+    };
+  } catch {
+    return defaultAboutData;
+  }
+}
+
+export async function getServicesPageData() {
+  const ctaData = await getCtaData();
+  const services = await getSanityServices();
+  const defaultServicesData = {
+    hero: {
+      label: "SERVICES & CAPABILITIES",
+      title: "End-to-end digital product design & engineering.",
+      description: "We partner with ambitious teams to turn bold visions into market-defining digital reality. Here is how we help brands design, build, and scale.",
+    },
+    services,
+    processSteps: MOCK_PROCESS,
+    ctaData,
+  };
+
+  if (!client) return defaultServicesData;
+
+  try {
+    const data = await client.fetch(queries.servicesPageQuery, {}, { next: { revalidate: 0 } });
+    if (!data) return defaultServicesData;
+
+    return {
+      hero: {
+        label: data.hero?.label || defaultServicesData.hero.label,
+        title: data.hero?.title || defaultServicesData.hero.title,
+        description: data.hero?.description || defaultServicesData.hero.description,
+      },
+      services: Array.isArray(data.servicesSection?.services) && data.servicesSection.services.length > 0
+        ? data.servicesSection.services.map((s: any) => ({
+            id: s.id || s._id,
+            number: s.number || "01",
+            title: s.title || "",
+            subtitle: s.subtitle || "",
+            description: s.description || "",
+            image: formatSanityImage(s.image, "/images/hero-studio.jpg"),
+            capabilities: Array.isArray(s.capabilities) ? s.capabilities : [],
+            deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
+            relatedCaseStudies: [],
+          }))
+        : services,
+      processSteps: Array.isArray(data.process?.steps) && data.process.steps.length > 0
+        ? data.process.steps
+        : MOCK_PROCESS,
+      ctaData: data.cta
+        ? {
+            label: data.cta.label || ctaData.label,
+            title: data.cta.title || ctaData.title,
+            description: data.cta.description || ctaData.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+          }
+        : ctaData,
+    };
+  } catch {
+    return defaultServicesData;
+  }
+}
+
+export async function getWorkPageData() {
+  const ctaData = await getCtaData();
+  const caseStudies = await getSanityCaseStudies();
+  const defaultWorkData = {
+    hero: {
+      label: "PORTFOLIO OF WORK",
+      title: "Selected case studies & digital product transformations.",
+      description: "Explore how we have partnered with ambitious companies across industries to solve complex problems and build products people actually want to use.",
+    },
+    categories: [
+      "All",
+      "Fintech Platform",
+      "Digital Healthcare",
+      "E-Commerce",
+      "Developer Tools",
+      "Architecture & Design",
+      "Cloud Infrastructure",
+    ],
+    caseStudies,
+    ctaData,
+  };
+
+  if (!client) return defaultWorkData;
+
+  try {
+    const data = await client.fetch(queries.workPageQuery, {}, { next: { revalidate: 0 } });
+    if (!data) return defaultWorkData;
+
+    return {
+      hero: {
+        label: data.hero?.label || defaultWorkData.hero.label,
+        title: data.hero?.title || defaultWorkData.hero.title,
+        description: data.hero?.description || defaultWorkData.hero.description,
+      },
+      categories: Array.isArray(data.categoriesSection?.categories) && data.categoriesSection.categories.length > 0
+        ? data.categoriesSection.categories
+        : defaultWorkData.categories,
+      caseStudies,
+      ctaData: data.cta
+        ? {
+            label: data.cta.label || ctaData.label,
+            title: data.cta.title || ctaData.title,
+            description: data.cta.description || ctaData.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+          }
+        : ctaData,
+    };
+  } catch {
+    return defaultWorkData;
+  }
+}
+
+export async function getInsightsPageData() {
+  const ctaData = await getCtaData();
+  const blogPosts = await getSanityBlogPosts();
+  const defaultInsightsData = {
+    hero: {
+      label: "INSIGHTS & ESSAYS",
+      title: "Perspectives on digital craft, code and scale.",
+      description: "In-depth articles from our design and engineering team on building products that stand out.",
+    },
+    categories: [
+      "All",
+      "Design Insights",
+      "Engineering Architecture",
+      "Strategy",
+      "Product Growth",
+    ],
+    blogPosts,
+    ctaData,
+  };
+
+  if (!client) return defaultInsightsData;
+
+  try {
+    const data = await client.fetch(queries.insightsPageQuery, {}, { next: { revalidate: 0 } });
+    if (!data) return defaultInsightsData;
+
+    return {
+      hero: {
+        label: data.hero?.label || defaultInsightsData.hero.label,
+        title: data.hero?.title || defaultInsightsData.hero.title,
+        description: data.hero?.description || defaultInsightsData.hero.description,
+      },
+      categories: Array.isArray(data.categoriesSection?.categories) && data.categoriesSection.categories.length > 0
+        ? data.categoriesSection.categories
+        : defaultInsightsData.categories,
+      blogPosts,
+      ctaData: data.cta
+        ? {
+            label: data.cta.label || ctaData.label,
+            title: data.cta.title || ctaData.title,
+            description: data.cta.description || ctaData.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+          }
+        : ctaData,
+    };
+  } catch {
+    return defaultInsightsData;
+  }
+}
+
+export async function getContactPageData() {
+  const defaultContactData = {
+    hero: {
+      label: "START A CONVERSATION",
+      title: "Let's build something worth talking about.",
+      description: "Have a project in mind or want to learn more about how Northstar can elevate your product? Tell us about your goals.",
+    },
+    contactInfo: {
+      email: "hello@northstar.agency",
+      address: "540 Broadway, 4th Floor, New York",
+      additionalLocations: "Also in London & Berlin",
+    },
+    formOptions: {
+      projectTypes: [
+        "Digital Strategy",
+        "Brand Experience",
+        "Web Application",
+        "E-Commerce Store",
+        "Design System",
+        "Growth & SEO",
+      ],
+      budgetRanges: ["$25k – $50k", "$50k – $100k", "$100k – $250k", "$250k+"],
+    },
+  };
+
+  if (!client) return defaultContactData;
+
+  try {
+    const data = await client.fetch(queries.contactPageQuery, {}, { next: { revalidate: 0 } });
+    if (!data) return defaultContactData;
+
+    return {
+      hero: {
+        label: data.hero?.label || defaultContactData.hero.label,
+        title: data.hero?.title || defaultContactData.hero.title,
+        description: data.hero?.description || defaultContactData.hero.description,
+      },
+      contactInfo: {
+        email: data.contactInfo?.email || defaultContactData.contactInfo.email,
+        address: data.contactInfo?.address || defaultContactData.contactInfo.address,
+        additionalLocations: data.contactInfo?.additionalLocations || defaultContactData.contactInfo.additionalLocations,
+      },
+      formOptions: {
+        projectTypes: Array.isArray(data.formOptions?.projectTypes) && data.formOptions.projectTypes.length > 0
+          ? data.formOptions.projectTypes
+          : defaultContactData.formOptions.projectTypes,
+        budgetRanges: Array.isArray(data.formOptions?.budgetRanges) && data.formOptions.budgetRanges.length > 0
+          ? data.formOptions.budgetRanges
+          : defaultContactData.formOptions.budgetRanges,
+      },
+    };
+  } catch {
+    return defaultContactData;
+  }
+}
+
+// ----------------------------------------------------
+// Legacy / Collection Async Fetchers
 // ----------------------------------------------------
 
 export async function getNavbarData(): Promise<NavbarData> {
@@ -336,10 +731,7 @@ export async function getCtaData(): Promise<CtaData> {
   }
 }
 
-// ----------------------------------------------------
-// Collections Fetchers with Mock Fallbacks
-// ----------------------------------------------------
-
+// Collections Fetchers
 export async function getSanityCaseStudies(): Promise<CaseStudy[]> {
   if (!client) return MOCK_CASE_STUDIES;
   try {

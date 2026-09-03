@@ -10,7 +10,12 @@ export const client = projectId
       projectId,
       dataset,
       apiVersion,
-      useCdn,
+      useCdn: false,
+      perspective: "published",
       token: process.env.SANITY_API_READ_TOKEN,
+      stega: {
+        enabled: true,
+        studioUrl: "/studio",
+      },
     })
   : null;

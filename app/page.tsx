@@ -8,26 +8,14 @@ import { Testimonial } from "@/components/sections/Testimonial";
 import { Results } from "@/components/sections/Results";
 import { Insights } from "@/components/sections/Insights";
 import { CTA } from "@/components/sections/CTA";
-import {
-  getHeroData,
-  getLogoCloudData,
-  getImageTextData,
-  getResultsData,
-  getCtaData,
-} from "@/sanity/lib/fetch";
+import { getHomepageData } from "@/sanity/lib/fetch";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const [heroData, logoCloudData, imageTextData, resultsData, ctaData] =
-    await Promise.all([
-      getHeroData(),
-      getLogoCloudData(),
-      getImageTextData(),
-      getResultsData(),
-      getCtaData(),
-    ]);
+  const { heroData, logoCloudData, imageTextData, resultsData, ctaData } =
+    await getHomepageData();
 
   return (
     <>

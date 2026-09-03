@@ -1,5 +1,367 @@
 import { groq } from "next-sanity";
 
+// ==========================================
+// Page-wise Singleton Documents Queries
+// ==========================================
+
+// Homepage Singleton Query
+export const homepageQuery = groq`
+  *[_type == "homepage" && (_id == "homepage" || _id == "drafts.homepage")][0] {
+    _id,
+    hero {
+      label,
+      title,
+      description,
+      primaryCtaLabel,
+      primaryCtaLink,
+      secondaryCtaLabel,
+      secondaryCtaLink,
+      image,
+      videoUrl
+    },
+    logoCloud {
+      heading,
+      logos[] {
+        name,
+        logoImage,
+        svgCode,
+        link
+      }
+    },
+    featuredWork {
+      label,
+      title,
+      description,
+      selectedCaseStudies[]-> {
+        _id,
+        "id": _id,
+        "slug": slug.current,
+        title,
+        client,
+        category,
+        year,
+        summary,
+        coverImage,
+        coverImageUrl
+      }
+    },
+    stats {
+      title,
+      description,
+      stats[] {
+        label,
+        value,
+        numericValue,
+        prefix,
+        suffix,
+        description
+      }
+    },
+    servicesSection {
+      label,
+      title,
+      description,
+      featuredServices[]-> {
+        _id,
+        "id": _id,
+        number,
+        title,
+        subtitle,
+        description
+      }
+    },
+    imageText {
+      label,
+      title,
+      paragraphs,
+      featureImage,
+      quote,
+      quoteAuthor,
+      ctaLabel,
+      ctaLink
+    },
+    testimonialsSection {
+      label,
+      title,
+      selectedTestimonials[]-> {
+        _id,
+        "id": _id,
+        quote,
+        author,
+        role,
+        company,
+        avatar,
+        metric
+      }
+    },
+    resultsSection {
+      label,
+      title,
+      description,
+      highlightMetric,
+      highlightLabel,
+      metrics[] {
+        value,
+        label,
+        description
+      }
+    },
+    insightsSection {
+      label,
+      title,
+      selectedPosts[]-> {
+        _id,
+        "id": _id,
+        "slug": slug.current,
+        title,
+        category,
+        publishedAt,
+        readTime,
+        excerpt,
+        coverImage
+      }
+    },
+    cta {
+      label,
+      title,
+      description,
+      primaryButtonLabel,
+      primaryButtonLink,
+      secondaryButtonLabel,
+      secondaryButtonLink
+    }
+  }
+`;
+
+// About Page Singleton Query
+export const aboutPageQuery = groq`
+  *[_type == "aboutPage" && (_id == "aboutPage" || _id == "drafts.aboutPage")][0] {
+    _id,
+    hero {
+      label,
+      headline,
+      coverImage
+    },
+    philosophy {
+      headline,
+      paragraphs
+    },
+    stats {
+      title,
+      description,
+      stats[] {
+        label,
+        value,
+        numericValue,
+        prefix,
+        suffix,
+        description
+      }
+    },
+    teamSection {
+      label,
+      title,
+      description,
+      members[]-> {
+        _id,
+        "id": _id,
+        name,
+        role,
+        bio,
+        image,
+        websiteUrl,
+        linkedinUrl
+      }
+    },
+    process {
+      label,
+      title,
+      description,
+      steps[] {
+        number,
+        title,
+        subtitle,
+        description,
+        deliverables
+      }
+    },
+    cta {
+      label,
+      title,
+      description,
+      primaryButtonLabel,
+      primaryButtonLink,
+      secondaryButtonLabel,
+      secondaryButtonLink
+    }
+  }
+`;
+
+// Services Page Singleton Query
+export const servicesPageQuery = groq`
+  *[_type == "servicesPage" && (_id == "servicesPage" || _id == "drafts.servicesPage")][0] {
+    _id,
+    hero {
+      label,
+      title,
+      description
+    },
+    servicesSection {
+      services[]-> {
+        _id,
+        "id": _id,
+        number,
+        title,
+        subtitle,
+        description,
+        capabilities[] {
+          title,
+          description
+        },
+        deliverables[] {
+          title,
+          items
+        }
+      }
+    },
+    process {
+      label,
+      title,
+      description,
+      steps[] {
+        number,
+        title,
+        subtitle,
+        description,
+        deliverables
+      }
+    },
+    cta {
+      label,
+      title,
+      description,
+      primaryButtonLabel,
+      primaryButtonLink,
+      secondaryButtonLabel,
+      secondaryButtonLink
+    }
+  }
+`;
+
+// Work Page Singleton Query
+export const workPageQuery = groq`
+  *[_type == "workPage" && (_id == "workPage" || _id == "drafts.workPage")][0] {
+    _id,
+    hero {
+      label,
+      title,
+      description
+    },
+    categoriesSection {
+      categories
+    },
+    cta {
+      label,
+      title,
+      description,
+      primaryButtonLabel,
+      primaryButtonLink,
+      secondaryButtonLabel,
+      secondaryButtonLink
+    }
+  }
+`;
+
+// Insights Page Singleton Query
+export const insightsPageQuery = groq`
+  *[_type == "insightsPage" && (_id == "insightsPage" || _id == "drafts.insightsPage")][0] {
+    _id,
+    hero {
+      label,
+      title,
+      description
+    },
+    featuredArticle-> {
+      _id,
+      "id": _id,
+      "slug": slug.current,
+      title,
+      category,
+      publishedAt,
+      readTime,
+      excerpt,
+      coverImage
+    },
+    categoriesSection {
+      categories
+    },
+    cta {
+      label,
+      title,
+      description,
+      primaryButtonLabel,
+      primaryButtonLink,
+      secondaryButtonLabel,
+      secondaryButtonLink
+    }
+  }
+`;
+
+// Contact Page Singleton Query
+export const contactPageQuery = groq`
+  *[_type == "contactPage" && (_id == "contactPage" || _id == "drafts.contactPage")][0] {
+    _id,
+    hero {
+      label,
+      title,
+      description
+    },
+    contactInfo {
+      email,
+      address,
+      additionalLocations
+    },
+    formOptions {
+      projectTypes,
+      budgetRanges
+    }
+  }
+`;
+
+// Global Site Settings Query
+export const siteSettingsQuery = groq`
+  *[_type == "siteSettings" && (_id == "siteSettings" || _id == "drafts.siteSettings")][0] {
+    _id,
+    siteTitle,
+    logoText,
+    navLinks[] {
+      label,
+      href
+    },
+    headerCtaLabel,
+    headerCtaLink,
+    footerCopyright
+  }
+`;
+
+// Team Members List Query
+export const teamMembersQuery = groq`
+  *[_type == "teamMember"] | order(order asc, _createdAt asc) {
+    _id,
+    "id": _id,
+    name,
+    role,
+    bio,
+    image,
+    websiteUrl,
+    linkedinUrl
+  }
+`;
+
+// ==========================================
+// Collections & Legacy Queries
+// ==========================================
+
 // Header Navigation
 export const navbarQuery = groq`
   *[_type == "navigation"][0] {
