@@ -9,8 +9,8 @@ export default function StudioLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full m-0 p-0 overflow-hidden">{children}</body>
-    </html>
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black">
+      {children}
+    </div>
   );
 }
