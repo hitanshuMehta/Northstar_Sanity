@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import type { ObjectInputProps } from "sanity";
 import { Card, TextInput, Stack, Text, Badge, Flex } from "@sanity/ui";
 import { SearchIcon } from "@sanity/icons/Search";
@@ -43,6 +43,8 @@ function getNestedValue(obj: any, path: string): any {
 
 export function TabSearchInput(props: ObjectInputProps) {
   const [query, setQuery] = useState("");
+  const lastHrefRef = useRef("");
+  const isUserSearchingRef = useRef(false);
 
   const groupsMap = useMemo(() => {
     const map = new Map<string, { name: string; title: string }>();
@@ -53,6 +55,19 @@ export function TabSearchInput(props: ObjectInputProps) {
     }
     return map;
   }, [props.schemaType.groups]);
+
+  // Helper function to reset scroll position of the editor pane to the top when changing sections
+  const resetScrollToTop = useCallback(() => {
+    setTimeout(() => {
+      const allElements = Array.from(document.querySelectorAll("*"));
+      for (const el of allElements) {
+        if (el.scrollTop > 0) {
+          el.scrollTop = 0;
+        }
+      }
+      window.scrollTo(0, 0);
+    }, 50);
+  }, []);
 
   // Recursively collect all searchable fields (names + actual content values)
   const allFlatFields = useMemo<FlatSearchField[]>(() => {
@@ -170,13 +185,18 @@ export function TabSearchInput(props: ObjectInputProps) {
     []
   );
 
-  // Auto-sync tab selection based on current URL structure selection
+  // Auto-sync tab selection ONLY when structure side panel navigation changes
   useEffect(() => {
     const syncGroupFromUrl = () => {
-      const href = window.location.href.toLowerCase();
+      const currentHref = window.location.href.toLowerCase();
 
-      // Check if URL contains structure node ID (e.g. -hero, -logocloud, -all)
-      if (href.includes("-all")) {
+      // Skip sync if URL hasn't changed or if user explicitly clicked a search result
+      if (currentHref === lastHrefRef.current || isUserSearchingRef.current) {
+        return;
+      }
+      lastHrefRef.current = currentHref;
+
+      if (currentHref.includes("-all")) {
         const tabs = Array.from(
           document.querySelectorAll('button[role="tab"], button[id*="tab"]')
         );
@@ -186,6 +206,7 @@ export function TabSearchInput(props: ObjectInputProps) {
 
         if (allTab && allTab.getAttribute("aria-selected") !== "true") {
           allTab.click();
+          resetScrollToTop();
         }
         return;
       }
@@ -195,7 +216,7 @@ export function TabSearchInput(props: ObjectInputProps) {
           const gName = group.name.toLowerCase();
           const gTitle = (group.title || "").toLowerCase();
 
-          if (href.includes(`-${gName}`) || href.includes(`group=${gName}`)) {
+          if (currentHref.includes(`-${gName}`) || currentHref.includes(`group=${gName}`)) {
             const tabs = Array.from(
               document.querySelectorAll('button[role="tab"], button[id*="tab"]')
             );
@@ -207,6 +228,7 @@ export function TabSearchInput(props: ObjectInputProps) {
 
             if (targetTab && targetTab.getAttribute("aria-selected") !== "true") {
               targetTab.click();
+              resetScrollToTop();
             }
             break;
           }
@@ -215,12 +237,14 @@ export function TabSearchInput(props: ObjectInputProps) {
     };
 
     syncGroupFromUrl();
-    const interval = setInterval(syncGroupFromUrl, 300);
+    const interval = setInterval(syncGroupFromUrl, 500);
     return () => clearInterval(interval);
-  }, [props.schemaType.groups]);
+  }, [props.schemaType.groups, resetScrollToTop]);
 
   // Handle clicking a search result item
   const handleSelectResult = (result: FlatSearchField) => {
+    isUserSearchingRef.current = true;
+
     if (result.groupName || result.groupTitle) {
       selectTabByGroup(result.groupName, result.groupTitle);
     }
@@ -237,10 +261,25 @@ export function TabSearchInput(props: ObjectInputProps) {
         targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
         const origOutline = targetEl.style.outline;
         targetEl.style.outline = "2px solid #C7FF3D";
+
+        // Focus the input element inside target container so user can edit immediately
+        const inputChild = targetEl.querySelector("input, textarea") as HTMLElement | null;
+        if (inputChild) {
+          inputChild.focus();
+        } else if (typeof targetEl.focus === "function") {
+          targetEl.focus();
+        }
+
         setTimeout(() => {
           targetEl.style.outline = origOutline;
         }, 2500);
       }
+
+      // Reset searching flag after navigation is settled
+      setTimeout(() => {
+        isUserSearchingRef.current = false;
+        lastHrefRef.current = window.location.href.toLowerCase();
+      }, 3000);
     }, 200);
 
     setQuery("");
