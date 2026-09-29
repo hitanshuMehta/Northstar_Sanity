@@ -17,6 +17,7 @@ import { BoltIcon } from "@sanity/icons/Bolt";
 import { RocketIcon } from "@sanity/icons/Rocket";
 import { UserIcon } from "@sanity/icons/User";
 import { TagIcon } from "@sanity/icons/Tag";
+import { ComponentIcon } from "@sanity/icons/Component";
 import { LivePreview } from "./components/LivePreview";
 
 export const structure: StructureResolver = (S) => {
@@ -42,58 +43,65 @@ export const structure: StructureResolver = (S) => {
         .icon(HomeIcon)
         .child(
           S.list()
-            .id("homepageList")
-            .title("Homepage Module")
+            .id("homepageSectionList")
+            .title("Homepage Sections")
             .items([
               S.listItem()
-                .id("homepageContent")
-                .title("Homepage Content")
+                .id("homepage-all")
+                .title("All Fields")
                 .icon(HomeIcon)
-                .child(createSingletonView("homepage", "homepage", "Homepage Content")),
-
+                .child(createSingletonView("homepage", "homepage", "Homepage (All Sections)")),
               S.divider(),
-
-              // Quick-Links to direct section tabs
               S.listItem()
-                .title("Section 01: Hero Section")
+                .id("homepage-hero")
+                .title("Hero Section")
                 .icon(SparklesIcon)
                 .child(createSingletonView("homepage", "homepage", "Hero Section")),
               S.listItem()
-                .title("Section 02: Logo Cloud")
+                .id("homepage-logocloud")
+                .title("Logo Cloud")
                 .icon(EarthGlobeIcon)
                 .child(createSingletonView("homepage", "homepage", "Logo Cloud")),
               S.listItem()
-                .title("Section 03: Featured Work")
+                .id("homepage-featuredwork")
+                .title("Featured Work")
                 .icon(CaseIcon)
                 .child(createSingletonView("homepage", "homepage", "Featured Work")),
               S.listItem()
-                .title("Section 04: Key Statistics")
+                .id("homepage-stats")
+                .title("Key Statistics")
                 .icon(BarChartIcon)
                 .child(createSingletonView("homepage", "homepage", "Key Statistics")),
               S.listItem()
-                .title("Section 05: Services Showcase")
+                .id("homepage-services")
+                .title("Services Showcase")
                 .icon(CogIcon)
                 .child(createSingletonView("homepage", "homepage", "Services Showcase")),
               S.listItem()
-                .title("Section 06: Editorial Philosophy")
+                .id("homepage-imagetext")
+                .title("Editorial Philosophy")
                 .icon(ComposeIcon)
                 .child(createSingletonView("homepage", "homepage", "Editorial Philosophy")),
               S.listItem()
-                .title("Section 07: Client Testimonials")
+                .id("homepage-testimonials")
+                .title("Client Testimonials")
                 .icon(CommentIcon)
                 .child(createSingletonView("homepage", "homepage", "Client Testimonials")),
               S.listItem()
-                .title("Section 08: Results & Impact")
+                .id("homepage-results")
+                .title("Results & Impact")
                 .icon(CheckmarkCircleIcon)
                 .child(createSingletonView("homepage", "homepage", "Results & Impact")),
               S.listItem()
-                .title("Section 09: Insights & Articles")
+                .id("homepage-insights")
+                .title("Insights & Articles")
                 .icon(DocumentTextIcon)
                 .child(createSingletonView("homepage", "homepage", "Insights & Articles")),
               S.listItem()
-                .title("Section 10: Call to Action Banner")
+                .id("homepage-cta")
+                .title("Call to Action Banner")
                 .icon(BoltIcon)
-                .child(createSingletonView("homepage", "homepage", "CTA Banner")),
+                .child(createSingletonView("homepage", "homepage", "Call to Action Banner")),
             ])
         ),
 
@@ -104,41 +112,45 @@ export const structure: StructureResolver = (S) => {
         .icon(InfoOutlineIcon)
         .child(
           S.list()
-            .id("aboutList")
-            .title("About Page Module")
+            .id("aboutSectionList")
+            .title("About Page Sections")
             .items([
               S.listItem()
-                .id("aboutContent")
-                .title("About Page Content")
+                .id("aboutPage-all")
+                .title("All Fields")
                 .icon(InfoOutlineIcon)
-                .child(createSingletonView("aboutPage", "aboutPage", "About Page Content")),
-
+                .child(createSingletonView("aboutPage", "aboutPage", "About Page (All Sections)")),
               S.divider(),
-
               S.listItem()
-                .title("Section 01: Hero Statement")
+                .id("aboutPage-hero")
+                .title("Hero Statement")
                 .icon(SparklesIcon)
                 .child(createSingletonView("aboutPage", "aboutPage", "Hero Statement")),
               S.listItem()
-                .title("Section 02: Agency Philosophy")
+                .id("aboutPage-philosophy")
+                .title("Philosophy & Narrative")
                 .icon(ComposeIcon)
-                .child(createSingletonView("aboutPage", "aboutPage", "Agency Philosophy")),
+                .child(createSingletonView("aboutPage", "aboutPage", "Philosophy & Narrative")),
               S.listItem()
-                .title("Section 03: Statistics")
+                .id("aboutPage-stats")
+                .title("Key Statistics")
                 .icon(BarChartIcon)
-                .child(createSingletonView("aboutPage", "aboutPage", "Statistics")),
+                .child(createSingletonView("aboutPage", "aboutPage", "Key Statistics")),
               S.listItem()
-                .title("Section 04: Leadership Team Grid")
+                .id("aboutPage-team")
+                .title("Leadership Team Grid")
                 .icon(UserIcon)
                 .child(createSingletonView("aboutPage", "aboutPage", "Leadership Team Grid")),
               S.listItem()
-                .title("Section 05: Working Process")
+                .id("aboutPage-process")
+                .title("Working Process")
                 .icon(RocketIcon)
                 .child(createSingletonView("aboutPage", "aboutPage", "Working Process")),
               S.listItem()
-                .title("Section 06: CTA Banner")
+                .id("aboutPage-cta")
+                .title("Call to Action Banner")
                 .icon(BoltIcon)
-                .child(createSingletonView("aboutPage", "aboutPage", "CTA Banner")),
+                .child(createSingletonView("aboutPage", "aboutPage", "Call to Action Banner")),
             ])
         ),
 
@@ -149,33 +161,35 @@ export const structure: StructureResolver = (S) => {
         .icon(CogIcon)
         .child(
           S.list()
-            .id("servicesListModule")
-            .title("Services Page Module")
+            .id("servicesSectionList")
+            .title("Services Page Sections")
             .items([
               S.listItem()
-                .id("servicesContent")
-                .title("Services Page Content")
+                .id("servicesPage-all")
+                .title("All Fields")
                 .icon(CogIcon)
-                .child(createSingletonView("servicesPage", "servicesPage", "Services Page Content")),
-
+                .child(createSingletonView("servicesPage", "servicesPage", "Services Page (All Sections)")),
               S.divider(),
-
               S.listItem()
-                .title("Section 01: Hero Heading")
+                .id("servicesPage-hero")
+                .title("Hero Heading")
                 .icon(SparklesIcon)
                 .child(createSingletonView("servicesPage", "servicesPage", "Hero Heading")),
               S.listItem()
-                .title("Section 02: Detailed Services Capabilities")
+                .id("servicesPage-serviceslist")
+                .title("Services Showcase")
                 .icon(CogIcon)
-                .child(createSingletonView("servicesPage", "servicesPage", "Detailed Services Capabilities")),
+                .child(createSingletonView("servicesPage", "servicesPage", "Services Showcase")),
               S.listItem()
-                .title("Section 03: Our Methodology")
+                .id("servicesPage-process")
+                .title("Our Methodology")
                 .icon(RocketIcon)
                 .child(createSingletonView("servicesPage", "servicesPage", "Our Methodology")),
               S.listItem()
-                .title("Section 04: CTA Banner")
+                .id("servicesPage-cta")
+                .title("Call to Action Banner")
                 .icon(BoltIcon)
-                .child(createSingletonView("servicesPage", "servicesPage", "CTA Banner")),
+                .child(createSingletonView("servicesPage", "servicesPage", "Call to Action Banner")),
             ])
         ),
 
@@ -186,66 +200,69 @@ export const structure: StructureResolver = (S) => {
         .icon(CaseIcon)
         .child(
           S.list()
-            .id("workListModule")
-            .title("Work Page Module")
+            .id("workSectionList")
+            .title("Work Page Sections")
             .items([
               S.listItem()
-                .id("workContent")
-                .title("Work Page Content")
+                .id("workPage-all")
+                .title("All Fields")
                 .icon(CaseIcon)
-                .child(createSingletonView("workPage", "workPage", "Work Page Content")),
-
+                .child(createSingletonView("workPage", "workPage", "Work Page (All Sections)")),
               S.divider(),
-
               S.listItem()
-                .title("Section 01: Hero Heading")
+                .id("workPage-hero")
+                .title("Hero Heading")
                 .icon(SparklesIcon)
                 .child(createSingletonView("workPage", "workPage", "Hero Heading")),
               S.listItem()
-                .title("Section 02: Category Filter Tabs")
+                .id("workPage-categories")
+                .title("Portfolio Filter Tabs")
                 .icon(TagIcon)
-                .child(createSingletonView("workPage", "workPage", "Category Filter Tabs")),
+                .child(createSingletonView("workPage", "workPage", "Portfolio Filter Tabs")),
               S.listItem()
-                .title("Section 03: CTA Banner")
+                .id("workPage-cta")
+                .title("Call to Action Banner")
                 .icon(BoltIcon)
-                .child(createSingletonView("workPage", "workPage", "CTA Banner")),
+                .child(createSingletonView("workPage", "workPage", "Call to Action Banner")),
             ])
         ),
 
-      // 5. Insights & Articles Module
+      // 5. Insights Page Module
       S.listItem()
         .id("insightsModule")
         .title("5. Insights Page")
         .icon(DocumentTextIcon)
         .child(
           S.list()
-            .id("insightsListModule")
-            .title("Insights Page Module")
+            .id("insightsSectionList")
+            .title("Insights Page Sections")
             .items([
               S.listItem()
-                .id("insightsContent")
-                .title("Insights Page Content")
+                .id("insightsPage-all")
+                .title("All Fields")
                 .icon(DocumentTextIcon)
-                .child(createSingletonView("insightsPage", "insightsPage", "Insights Page Content")),
-
+                .child(createSingletonView("insightsPage", "insightsPage", "Insights Page (All Sections)")),
               S.divider(),
-
               S.listItem()
-                .title("Section 01: Hero Heading")
+                .id("insightsPage-hero")
+                .title("Hero Heading")
                 .icon(SparklesIcon)
                 .child(createSingletonView("insightsPage", "insightsPage", "Hero Heading")),
               S.listItem()
-                .title("Section 02: Featured Lead Article")
+                .id("insightsPage-featured")
+                .title("Featured Article")
                 .icon(DocumentTextIcon)
-                .child(createSingletonView("insightsPage", "insightsPage", "Featured Lead Article")),
+                .child(createSingletonView("insightsPage", "insightsPage", "Featured Article")),
               S.listItem()
-                .title("Section 03: Category Filter Tabs")
+                .id("insightsPage-categories")
+                .title("Category Filter Tabs")
                 .icon(TagIcon)
                 .child(createSingletonView("insightsPage", "insightsPage", "Category Filter Tabs")),
               S.listItem()
-                .title("Section 04: CTA Banner")
+                .id("insightsPage-cta")
+                .title("Call to Action Banner")
                 .icon(BoltIcon)
-                .child(createSingletonView("insightsPage", "insightsPage", "CTA Banner")),
+                .child(createSingletonView("insightsPage", "insightsPage", "Call to Action Banner")),
             ])
         ),
 
@@ -256,29 +273,30 @@ export const structure: StructureResolver = (S) => {
         .icon(PinIcon)
         .child(
           S.list()
-            .id("contactListModule")
-            .title("Contact Page Module")
+            .id("contactSectionList")
+            .title("Contact Page Sections")
             .items([
               S.listItem()
-                .id("contactContent")
-                .title("Contact Page Content")
+                .id("contactPage-all")
+                .title("All Fields")
                 .icon(PinIcon)
-                .child(createSingletonView("contactPage", "contactPage", "Contact Page Content")),
-
+                .child(createSingletonView("contactPage", "contactPage", "Contact Page (All Sections)")),
               S.divider(),
-
               S.listItem()
-                .title("Section 01: Hero Heading")
+                .id("contactPage-hero")
+                .title("Hero Heading")
                 .icon(SparklesIcon)
                 .child(createSingletonView("contactPage", "contactPage", "Hero Heading")),
               S.listItem()
-                .title("Section 02: Studio Contact Info & Locations")
+                .id("contactPage-info")
+                .title("Contact Info & Locations")
                 .icon(PinIcon)
-                .child(createSingletonView("contactPage", "contactPage", "Studio Contact Info")),
+                .child(createSingletonView("contactPage", "contactPage", "Contact Info & Locations")),
               S.listItem()
-                .title("Section 03: Form Options & Chips")
-                .icon(TagIcon)
-                .child(createSingletonView("contactPage", "contactPage", "Form Options")),
+                .id("contactPage-formoptions")
+                .title("Form Options & Chips")
+                .icon(ComponentIcon)
+                .child(createSingletonView("contactPage", "contactPage", "Form Options & Chips")),
             ])
         ),
 

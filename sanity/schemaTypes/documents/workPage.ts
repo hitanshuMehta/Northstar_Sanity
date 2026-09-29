@@ -11,10 +11,18 @@ export const workPageType = defineType({
   components: {
     input: TabSearchInput,
   },
+  preview: {
+    prepare() {
+      return {
+        title: "Work / Portfolio Page Settings",
+        subtitle: "Manage hero heading & category filter tabs",
+      };
+    },
+  },
   groups: [
-    { name: "hero", title: "1. Hero Heading", icon: SparklesIcon },
-    { name: "categories", title: "2. Portfolio Filter Tabs", icon: TagIcon },
-    { name: "cta", title: "3. CTA Banner", icon: BoltIcon },
+    { name: "hero", title: "Hero Heading", icon: SparklesIcon },
+    { name: "categories", title: "Portfolio Filter Tabs", icon: TagIcon },
+    { name: "cta", title: "Call to Action Banner", icon: BoltIcon },
   ],
   fields: [
     // 1. Hero Group

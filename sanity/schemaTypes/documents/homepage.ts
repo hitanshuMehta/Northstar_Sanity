@@ -20,17 +20,25 @@ export const homepageType = defineType({
   components: {
     input: TabSearchInput,
   },
+  preview: {
+    prepare() {
+      return {
+        title: "Homepage Content Settings",
+        subtitle: "Manage all homepage sections & fields",
+      };
+    },
+  },
   groups: [
-    { name: "hero", title: "1. Hero Section", icon: SparklesIcon },
-    { name: "logoCloud", title: "2. Logo Cloud", icon: EarthGlobeIcon },
-    { name: "featuredWork", title: "3. Featured Work", icon: CaseIcon },
-    { name: "stats", title: "4. Key Statistics", icon: BarChartIcon },
-    { name: "services", title: "5. Services Showcase", icon: CogIcon },
-    { name: "imageText", title: "6. Editorial Philosophy", icon: ComposeIcon },
-    { name: "testimonials", title: "7. Testimonials", icon: CommentIcon },
-    { name: "results", title: "8. Results & Impact", icon: CheckmarkCircleIcon },
-    { name: "insights", title: "9. Insights & Articles", icon: DocumentTextIcon },
-    { name: "cta", title: "10. CTA Banner", icon: BoltIcon },
+    { name: "hero", title: "Hero Section", icon: SparklesIcon },
+    { name: "logoCloud", title: "Logo Cloud", icon: EarthGlobeIcon },
+    { name: "featuredWork", title: "Featured Work", icon: CaseIcon },
+    { name: "stats", title: "Key Statistics", icon: BarChartIcon },
+    { name: "services", title: "Services Showcase", icon: CogIcon },
+    { name: "imageText", title: "Editorial Philosophy", icon: ComposeIcon },
+    { name: "testimonials", title: "Client Testimonials", icon: CommentIcon },
+    { name: "results", title: "Results & Impact", icon: CheckmarkCircleIcon },
+    { name: "insights", title: "Insights & Articles", icon: DocumentTextIcon },
+    { name: "cta", title: "Call to Action Banner", icon: BoltIcon },
   ],
   fields: [
     // 1. Hero Section

@@ -14,13 +14,21 @@ export const aboutPageType = defineType({
   components: {
     input: TabSearchInput,
   },
+  preview: {
+    prepare() {
+      return {
+        title: "About Page Content Settings",
+        subtitle: "Manage hero statement, philosophy, team & process",
+      };
+    },
+  },
   groups: [
-    { name: "hero", title: "1. Hero Statement", icon: SparklesIcon },
-    { name: "philosophy", title: "2. Philosophy & Story", icon: ComposeIcon },
-    { name: "stats", title: "3. Statistics", icon: BarChartIcon },
-    { name: "team", title: "4. Leadership Team", icon: UserIcon },
-    { name: "process", title: "5. Working Process", icon: RocketIcon },
-    { name: "cta", title: "6. CTA Banner", icon: BoltIcon },
+    { name: "hero", title: "Hero Statement", icon: SparklesIcon },
+    { name: "philosophy", title: "Philosophy & Story", icon: ComposeIcon },
+    { name: "stats", title: "Key Statistics", icon: BarChartIcon },
+    { name: "team", title: "Leadership Team Grid", icon: UserIcon },
+    { name: "process", title: "Working Process", icon: RocketIcon },
+    { name: "cta", title: "Call to Action Banner", icon: BoltIcon },
   ],
   fields: [
     // 1. Hero Group

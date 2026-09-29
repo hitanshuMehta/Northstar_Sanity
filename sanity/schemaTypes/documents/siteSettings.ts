@@ -6,6 +6,14 @@ export const siteSettingsType = defineType({
   title: "Site Settings",
   type: "document",
   icon: CogIcon,
+  preview: {
+    prepare() {
+      return {
+        title: "Global Site Settings",
+        subtitle: "Manage branding, navigation links & footer copyright",
+      };
+    },
+  },
   fields: [
     defineField({ name: "siteTitle", title: "Global Site Title", type: "string", initialValue: "Northstar Agency" }),
     defineField({ name: "logoText", title: "Navbar Brand Logo Text", type: "string", initialValue: "NORTHSTAR" }),

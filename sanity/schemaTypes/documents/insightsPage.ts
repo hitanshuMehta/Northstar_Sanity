@@ -12,11 +12,19 @@ export const insightsPageType = defineType({
   components: {
     input: TabSearchInput,
   },
+  preview: {
+    prepare() {
+      return {
+        title: "Insights Page Settings",
+        subtitle: "Manage hero heading, lead article & categories",
+      };
+    },
+  },
   groups: [
-    { name: "hero", title: "1. Hero Heading", icon: SparklesIcon },
-    { name: "featured", title: "2. Featured Article", icon: DocumentTextIcon },
-    { name: "categories", title: "3. Category Filter Tabs", icon: TagIcon },
-    { name: "cta", title: "4. CTA Banner", icon: BoltIcon },
+    { name: "hero", title: "Hero Heading", icon: SparklesIcon },
+    { name: "featured", title: "Featured Article", icon: DocumentTextIcon },
+    { name: "categories", title: "Category Filter Tabs", icon: TagIcon },
+    { name: "cta", title: "Call to Action Banner", icon: BoltIcon },
   ],
   fields: [
     // 1. Hero Group

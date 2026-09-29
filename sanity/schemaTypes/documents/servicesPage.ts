@@ -12,11 +12,19 @@ export const servicesPageType = defineType({
   components: {
     input: TabSearchInput,
   },
+  preview: {
+    prepare() {
+      return {
+        title: "Services Page Content Settings",
+        subtitle: "Manage hero heading, capabilities & methodology",
+      };
+    },
+  },
   groups: [
-    { name: "hero", title: "1. Hero Heading", icon: SparklesIcon },
-    { name: "servicesList", title: "2. Services Showcase", icon: CogIcon },
-    { name: "process", title: "3. Our Methodology", icon: RocketIcon },
-    { name: "cta", title: "4. CTA Banner", icon: BoltIcon },
+    { name: "hero", title: "Hero Heading", icon: SparklesIcon },
+    { name: "servicesList", title: "Services Showcase", icon: CogIcon },
+    { name: "process", title: "Our Methodology", icon: RocketIcon },
+    { name: "cta", title: "Call to Action Banner", icon: BoltIcon },
   ],
   fields: [
     // 1. Hero Group

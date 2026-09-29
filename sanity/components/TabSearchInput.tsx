@@ -1,13 +1,44 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type { ObjectInputProps } from "sanity";
 import { Card, TextInput, Stack, Text, Badge, Flex } from "@sanity/ui";
 import { SearchIcon } from "@sanity/icons/Search";
 
-interface SearchResult {
+interface FlatSearchField {
   fieldName: string;
   fieldTitle: string;
+  path: string;
   groupName?: string;
   groupTitle?: string;
+  contentPreview?: string;
+}
+
+function extractStringValues(val: any): string {
+  if (val === null || val === undefined) return "";
+  if (typeof val === "string") return val;
+  if (typeof val === "number" || typeof val === "boolean") return String(val);
+  if (Array.isArray(val)) {
+    return val.map((item) => extractStringValues(item)).join(" ");
+  }
+  if (typeof val === "object") {
+    let result = "";
+    for (const key of Object.keys(val)) {
+      if (key.startsWith("_")) continue;
+      result += " " + extractStringValues(val[key]);
+    }
+    return result;
+  }
+  return "";
+}
+
+function getNestedValue(obj: any, path: string): any {
+  if (!obj || !path) return undefined;
+  const parts = path.split(".");
+  let curr = obj;
+  for (const part of parts) {
+    if (curr === null || curr === undefined) return undefined;
+    curr = curr[part];
+  }
+  return curr;
 }
 
 export function TabSearchInput(props: ObjectInputProps) {
@@ -23,42 +54,185 @@ export function TabSearchInput(props: ObjectInputProps) {
     return map;
   }, [props.schemaType.groups]);
 
-  const searchResults = useMemo<SearchResult[]>(() => {
+  // Recursively collect all searchable fields (names + actual content values)
+  const allFlatFields = useMemo<FlatSearchField[]>(() => {
+    const list: FlatSearchField[] = [];
+
+    const traverse = (
+      fields: any[],
+      parentPath = "",
+      parentGroup?: { name: string; title: string }
+    ) => {
+      if (!Array.isArray(fields)) return;
+
+      for (const field of fields) {
+        if (!field) continue;
+        const fieldName = field.name;
+        if (!fieldName) continue;
+
+        const fieldTitle = field.type?.title || field.title || fieldName;
+        const path = parentPath ? `${parentPath}.${fieldName}` : fieldName;
+
+        let groupName: string | undefined;
+        if (typeof field.group === "string") {
+          groupName = field.group;
+        } else if (Array.isArray(field.group) && field.group.length > 0) {
+          groupName = field.group[0];
+        }
+
+        const currentGroup = groupName ? groupsMap.get(groupName) : parentGroup;
+
+        // Retrieve actual document content value for this path
+        const rawVal = getNestedValue(props.value, path);
+        const contentStr = extractStringValues(rawVal).trim();
+
+        list.push({
+          fieldName,
+          fieldTitle,
+          path,
+          groupName: currentGroup?.name,
+          groupTitle: currentGroup?.title,
+          contentPreview: contentStr.length > 0 ? contentStr : undefined,
+        });
+
+        // Traverse nested object fields
+        if (field.type?.fields && Array.isArray(field.type.fields)) {
+          traverse(field.type.fields, path, currentGroup);
+        } else if (field.fields && Array.isArray(field.fields)) {
+          traverse(field.fields, path, currentGroup);
+        }
+      }
+    };
+
+    traverse(props.schemaType.fields || []);
+    return list;
+  }, [props.schemaType.fields, groupsMap, props.value]);
+
+  // Filter out parent container objects to leave ONLY leaf input fields (no duplicate parent rows)
+  const leafFields = useMemo(() => {
+    const leaves = allFlatFields.filter((item) => {
+      return !allFlatFields.some(
+        (other) => other.path !== item.path && other.path.startsWith(item.path + ".")
+      );
+    });
+
+    const seenPaths = new Set<string>();
+    return leaves.filter((item) => {
+      if (seenPaths.has(item.path)) return false;
+      seenPaths.add(item.path);
+      return true;
+    });
+  }, [allFlatFields]);
+
+  // Filter search results based on query (searches names, titles, paths, AND actual field content values)
+  const searchResults = useMemo<FlatSearchField[]>(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase().trim();
-    const results: SearchResult[] = [];
 
-    for (const fieldMember of props.schemaType.fields) {
-      const fieldTitle = fieldMember.type?.title || fieldMember.name;
-      const fieldName = fieldMember.name;
-      const groupName = typeof fieldMember.group === "string" ? fieldMember.group : Array.isArray(fieldMember.group) ? fieldMember.group[0] : undefined;
-      const groupTitle = groupName ? groupsMap.get(groupName)?.title : undefined;
+    return leafFields.filter((item) => {
+      const matchName = item.fieldName.toLowerCase().includes(q);
+      const matchTitle = item.fieldTitle.toLowerCase().includes(q);
+      const matchPath = item.path.toLowerCase().includes(q);
+      const matchGroup = Boolean(item.groupTitle && item.groupTitle.toLowerCase().includes(q));
+      const matchContent = Boolean(item.contentPreview && item.contentPreview.toLowerCase().includes(q));
 
-      if (
-        fieldName.toLowerCase().includes(q) ||
-        fieldTitle.toLowerCase().includes(q) ||
-        (groupTitle && groupTitle.toLowerCase().includes(q))
-      ) {
-        results.push({ fieldName, fieldTitle, groupName, groupTitle });
+      return matchName || matchTitle || matchPath || matchGroup || matchContent;
+    });
+  }, [query, leafFields]);
+
+  // Helper function to click tab button by group name or title
+  const selectTabByGroup = useCallback(
+    (groupName?: string, groupTitle?: string) => {
+      const tabs = Array.from(
+        document.querySelectorAll('button[role="tab"], button[id*="tab"]')
+      );
+
+      let targetTab: HTMLElement | undefined;
+
+      if (groupName || groupTitle) {
+        targetTab = tabs.find((t) => {
+          const text = (t.textContent || "").toLowerCase();
+          const id = (t.id || "").toLowerCase();
+          const dataId = (t.getAttribute("data-ui-id") || "").toLowerCase();
+
+          return (
+            (groupName && (id.includes(groupName.toLowerCase()) || dataId.includes(groupName.toLowerCase()))) ||
+            (groupTitle && text.includes(groupTitle.toLowerCase())) ||
+            (groupName && text.includes(groupName.toLowerCase()))
+          );
+        }) as HTMLElement | undefined;
       }
-    }
 
-    return results;
-  }, [query, props.schemaType.fields, groupsMap]);
+      if (targetTab) {
+        targetTab.click();
+      }
+    },
+    []
+  );
 
-  const handleSelectResult = (result: SearchResult) => {
-    if (result.groupName) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("group", result.groupName);
-      window.history.pushState({}, "", url.toString());
+  // Auto-sync tab selection based on current URL structure selection
+  useEffect(() => {
+    const syncGroupFromUrl = () => {
+      const href = window.location.href.toLowerCase();
 
-      // Trigger tab click event if tab element exists
-      const tabEl = document.querySelector(`[data-ui-id*="tab-${result.groupName}"], button[id*="${result.groupName}"]`) as HTMLElement;
-      if (tabEl) tabEl.click();
+      // Check if URL contains structure node ID (e.g. -hero, -logocloud, -all)
+      if (href.includes("-all")) {
+        const tabs = Array.from(
+          document.querySelectorAll('button[role="tab"], button[id*="tab"]')
+        );
+        const allTab = tabs.find((t) =>
+          (t.textContent || "").toLowerCase().includes("all fields")
+        ) as HTMLElement | undefined;
+
+        if (allTab && allTab.getAttribute("aria-selected") !== "true") {
+          allTab.click();
+        }
+        return;
+      }
+
+      if (props.schemaType.groups) {
+        for (const group of props.schemaType.groups) {
+          const gName = group.name.toLowerCase();
+          const gTitle = (group.title || "").toLowerCase();
+
+          if (href.includes(`-${gName}`) || href.includes(`group=${gName}`)) {
+            const tabs = Array.from(
+              document.querySelectorAll('button[role="tab"], button[id*="tab"]')
+            );
+
+            const targetTab = tabs.find((t) => {
+              const text = (t.textContent || "").toLowerCase();
+              return text.includes(gTitle) || text.includes(gName);
+            }) as HTMLElement | undefined;
+
+            if (targetTab && targetTab.getAttribute("aria-selected") !== "true") {
+              targetTab.click();
+            }
+            break;
+          }
+        }
+      }
+    };
+
+    syncGroupFromUrl();
+    const interval = setInterval(syncGroupFromUrl, 300);
+    return () => clearInterval(interval);
+  }, [props.schemaType.groups]);
+
+  // Handle clicking a search result item
+  const handleSelectResult = (result: FlatSearchField) => {
+    if (result.groupName || result.groupTitle) {
+      selectTabByGroup(result.groupName, result.groupTitle);
     }
 
     setTimeout(() => {
-      const targetEl = document.querySelector(`[id*="${result.fieldName}"], [data-field-name="${result.fieldName}"]`) as HTMLElement;
+      const fieldIdParts = result.path.split(".");
+      const lastPart = fieldIdParts[fieldIdParts.length - 1];
+
+      const targetEl = document.querySelector(
+        `[id*="${lastPart}"], [data-field-name="${lastPart}"], [id*="${result.fieldName}"]`
+      ) as HTMLElement;
+
       if (targetEl) {
         targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
         const origOutline = targetEl.style.outline;
@@ -74,35 +248,78 @@ export function TabSearchInput(props: ObjectInputProps) {
 
   return (
     <Stack space={3 as any}>
-      <Card padding={3} radius={2} border style={{ background: "var(--sanity-color-bg-base, #121316)" }}>
+      {/* Hide native section tab bar from UI since side panel manages section selection */}
+      <style>{`
+        [role="tablist"],
+        div[data-testid*="group-tab"],
+        div[class*="TabList"],
+        div[class*="tabList"] {
+          position: absolute !important;
+          top: -9999px !important;
+          left: -9999px !important;
+          width: 1px !important;
+          height: 1px !important;
+          overflow: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `}</style>
+
+      <Card
+        padding={3}
+        radius={2}
+        border
+        style={{ background: "var(--sanity-color-bg-base, #121316)" }}
+      >
         <Stack space={2 as any}>
           <TextInput
             icon={SearchIcon}
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
-            placeholder="🔍 Instant search all fields across section tabs..."
+            placeholder="🔍 Instant search any text content, headline or field name..."
           />
 
           {query.trim() && (
-            <Card padding={2} radius={2} border style={{ maxHeight: "220px", overflowY: "auto" }}>
-              <Stack space={1 as any}>
+            <Card
+              padding={2}
+              radius={2}
+              border
+              style={{ maxHeight: "280px", overflowY: "auto", background: "var(--sanity-color-bg-base, #121316)" }}
+            >
+              <Stack space={2 as any}>
                 {searchResults.length === 0 ? (
-                  <Text size={1} muted>No matching fields found for &quot;{query}&quot;</Text>
+                  <Text size={1} muted>
+                    No matching fields or content found for &quot;{query}&quot;
+                  </Text>
                 ) : (
-                  searchResults.map((res) => (
+                  searchResults.map((res, index) => (
                     <Card
-                      key={res.fieldName}
-                      padding={2}
+                      key={`${res.path}-${index}`}
+                      padding={3}
                       radius={2}
+                      border
                       onClick={() => handleSelectResult(res)}
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        cursor: "pointer",
+                        background: "rgba(255, 255, 255, 0.03)",
+                      }}
                     >
-                      <Flex align="center" justify="space-between">
-                        <Text size={1} weight="semibold">
-                          {res.fieldTitle} <Text size={1} muted>({res.fieldName})</Text>
-                        </Text>
+                      <Flex align="flex-start" justify="space-between" gap={3}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 600, fontSize: "13px", color: "var(--sanity-color-fg-base, #FFFFFF)", marginBottom: "4px", lineHeight: "1.4" }}>
+                            {res.fieldTitle}{" "}
+                            <span style={{ fontWeight: 400, opacity: 0.5, fontSize: "11px" }}>
+                              ({res.path})
+                            </span>
+                          </div>
+                          {res.contentPreview && (
+                            <div style={{ fontSize: "12px", color: "var(--sanity-color-text-muted, #94A3B8)", lineHeight: "1.4", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                              &quot;{res.contentPreview}&quot;
+                            </div>
+                          )}
+                        </div>
                         {res.groupTitle && (
-                          <Badge tone="primary" fontSize={0 as any}>
+                          <Badge tone="primary" style={{ flexShrink: 0, marginTop: "2px" }}>
                             {res.groupTitle}
                           </Badge>
                         )}

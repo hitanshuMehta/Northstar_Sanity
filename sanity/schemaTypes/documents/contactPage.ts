@@ -11,10 +11,18 @@ export const contactPageType = defineType({
   components: {
     input: TabSearchInput,
   },
+  preview: {
+    prepare() {
+      return {
+        title: "Contact Page Content Settings",
+        subtitle: "Manage hero, contact info & form option chips",
+      };
+    },
+  },
   groups: [
-    { name: "hero", title: "1. Hero Heading", icon: SparklesIcon },
-    { name: "info", title: "2. Contact Info & Locations", icon: PinIcon },
-    { name: "formOptions", title: "3. Form Options & Chips", icon: ComponentIcon },
+    { name: "hero", title: "Hero Heading", icon: SparklesIcon },
+    { name: "info", title: "Contact Info & Locations", icon: PinIcon },
+    { name: "formOptions", title: "Form Options & Chips", icon: ComponentIcon },
   ],
   fields: [
     // 1. Hero Group
