@@ -17,15 +17,20 @@ interface FormErrors {
 
 interface ContactPageClientProps {
   data: {
-    hero: { label: string; title: string; description: string };
-    contactInfo: { email: string; address: string; additionalLocations: string };
-    formOptions: { projectTypes: string[]; budgetRanges: string[] };
+    hero?: { label?: string; title?: string; description?: string };
+    contactInfo?: { email?: string; address?: string; additionalLocations?: string };
+    formOptions?: { projectTypes?: string[]; budgetRanges?: string[] };
   };
 }
 
 export function ContactPageClient({ data }: ContactPageClientProps) {
-  const projectTypes = data.formOptions.projectTypes;
-  const budgetRanges = data.formOptions.budgetRanges;
+  const projectTypes = Array.isArray(data.formOptions?.projectTypes) && data.formOptions!.projectTypes.length > 0
+    ? data.formOptions!.projectTypes
+    : ["Digital Strategy", "Web Application", "E-Commerce", "Design System"];
+
+  const budgetRanges = Array.isArray(data.formOptions?.budgetRanges) && data.formOptions!.budgetRanges.length > 0
+    ? data.formOptions!.budgetRanges
+    : ["$25k – $50k", "$50k – $100k", "$100k – $250k", "$250k+"];
 
   const [formData, setFormData] = useState({
     name: "",
@@ -97,44 +102,58 @@ export function ContactPageClient({ data }: ContactPageClientProps) {
           <div className="lg:col-span-5 flex flex-col justify-between">
             <div>
               <Reveal>
-                <span className="text-xs font-mono font-bold tracking-widest uppercase text-north-accent mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-north-accent animate-pulse" />
-                  {data.hero.label}
-                </span>
-                <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-north-primary font-normal leading-[1.05] tracking-tight mb-6">
-                  {data.hero.title}
-                </h1>
-                <p className="text-base sm:text-lg text-north-muted leading-relaxed mb-10">
-                  {data.hero.description}
-                </p>
+                {data.hero?.label && (
+                  <span className="text-xs font-mono font-bold tracking-widest uppercase text-north-accent mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-north-accent animate-pulse" />
+                    {data.hero.label}
+                  </span>
+                )}
+                {data.hero?.title && (
+                  <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-north-primary font-normal leading-[1.05] tracking-tight mb-6">
+                    {data.hero.title}
+                  </h1>
+                )}
+                {data.hero?.description && (
+                  <p className="text-base sm:text-lg text-north-muted leading-relaxed mb-10">
+                    {data.hero.description}
+                  </p>
+                )}
               </Reveal>
 
-              <Reveal delay={0.1}>
-                <div className="space-y-6 border-t border-north-border pt-8 text-sm">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-full bg-north-surface border border-north-border">
-                      <Mail className="w-5 h-5 text-north-primary" />
-                    </div>
-                    <div>
-                      <span className="text-xs font-mono text-north-muted block uppercase">EMAIL</span>
-                      <a href={`mailto:${data.contactInfo.email}`} className="text-north-primary font-semibold text-base hover:text-north-accent transition-colors">
-                        {data.contactInfo.email}
-                      </a>
-                    </div>
-                  </div>
+              {data.contactInfo && (data.contactInfo.email || data.contactInfo.address) && (
+                <Reveal delay={0.1}>
+                  <div className="space-y-6 border-t border-north-border pt-8 text-sm">
+                    {data.contactInfo.email && (
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-full bg-north-surface border border-north-border">
+                          <Mail className="w-5 h-5 text-north-primary" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-mono text-north-muted block uppercase">EMAIL</span>
+                          <a href={`mailto:${data.contactInfo.email}`} className="text-north-primary font-semibold text-base hover:text-north-accent transition-colors">
+                            {data.contactInfo.email}
+                          </a>
+                        </div>
+                      </div>
+                    )}
 
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-full bg-north-surface border border-north-border">
-                      <MapPin className="w-5 h-5 text-north-primary" />
-                    </div>
-                    <div>
-                      <span className="text-xs font-mono text-north-muted block uppercase">STUDIO HEADQUARTERS</span>
-                      <span className="text-north-primary font-medium block">{data.contactInfo.address}</span>
-                      <span className="text-xs text-north-muted">{data.contactInfo.additionalLocations}</span>
-                    </div>
+                    {data.contactInfo.address && (
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-full bg-north-surface border border-north-border">
+                          <MapPin className="w-5 h-5 text-north-primary" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-mono text-north-muted block uppercase">STUDIO HEADQUARTERS</span>
+                          <span className="text-north-primary font-medium block">{data.contactInfo.address}</span>
+                          {data.contactInfo.additionalLocations && (
+                            <span className="text-xs text-north-muted">{data.contactInfo.additionalLocations}</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </Reveal>
+                </Reveal>
+              )}
             </div>
           </div>
 
@@ -280,50 +299,54 @@ export function ContactPageClient({ data }: ContactPageClientProps) {
                   </div>
 
                   {/* Project Type Chips */}
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-north-muted mb-3">
-                      PROJECT TYPE
-                    </label>
-                    <div className="flex flex-wrap gap-2.5">
-                      {projectTypes.map((type) => (
-                        <button
-                          type="button"
-                          key={type}
-                          onClick={() => setFormData({ ...formData, projectType: type })}
-                          className={`text-xs font-medium px-4 py-2 rounded-full border transition-all cursor-pointer ${
-                            formData.projectType === type
-                              ? "bg-[#C7FF3D] text-[#111111] border-[#C7FF3D] font-bold shadow-md shadow-[#C7FF3D]/20 scale-105"
-                              : "bg-north-bg border-north-border text-north-muted hover:text-north-primary hover:border-north-muted"
-                          }`}
-                        >
-                          {type}
-                        </button>
-                      ))}
+                  {projectTypes.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-north-muted mb-3">
+                        PROJECT TYPE
+                      </label>
+                      <div className="flex flex-wrap gap-2.5">
+                        {projectTypes.map((type) => (
+                          <button
+                            type="button"
+                            key={type}
+                            onClick={() => setFormData({ ...formData, projectType: type })}
+                            className={`text-xs font-medium px-4 py-2 rounded-full border transition-all cursor-pointer ${
+                              formData.projectType === type
+                                ? "bg-[#C7FF3D] text-[#111111] border-[#C7FF3D] font-bold shadow-md shadow-[#C7FF3D]/20 scale-105"
+                                : "bg-north-bg border-north-border text-north-muted hover:text-north-primary hover:border-north-muted"
+                            }`}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Budget Selectors */}
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-north-muted mb-3">
-                      ESTIMATED BUDGET (USD)
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {budgetRanges.map((b) => (
-                        <button
-                          type="button"
-                          key={b}
-                          onClick={() => setFormData({ ...formData, budget: b })}
-                          className={`text-xs font-mono text-center py-3 px-3 rounded-sm border transition-all cursor-pointer ${
-                            formData.budget === b
-                              ? "bg-[#C7FF3D] text-[#111111] border-[#C7FF3D] font-bold shadow-md shadow-[#C7FF3D]/20 scale-[1.02]"
-                              : "bg-north-bg border-north-border text-north-muted hover:text-north-primary hover:border-north-muted"
-                          }`}
-                        >
-                          {b}
-                        </button>
-                      ))}
+                  {budgetRanges.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-north-muted mb-3">
+                        ESTIMATED BUDGET (USD)
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {budgetRanges.map((b) => (
+                          <button
+                            type="button"
+                            key={b}
+                            onClick={() => setFormData({ ...formData, budget: b })}
+                            className={`text-xs font-mono text-center py-3 px-3 rounded-sm border transition-all cursor-pointer ${
+                              formData.budget === b
+                                ? "bg-[#C7FF3D] text-[#111111] border-[#C7FF3D] font-bold shadow-md shadow-[#C7FF3D]/20 scale-[1.02]"
+                                : "bg-north-bg border-north-border text-north-muted hover:text-north-primary hover:border-north-muted"
+                            }`}
+                          >
+                            {b}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Message */}
                   <div>

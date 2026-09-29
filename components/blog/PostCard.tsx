@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BlogPost } from "@/lib/types";
 import { Badge } from "../ui/Badge";
+import { SafeImage } from "../ui/SafeImage";
 
 interface PostCardProps {
   post: BlogPost;
@@ -17,44 +17,53 @@ export function PostCard({ post, featured = false }: PostCardProps) {
     return (
       <Link href={`/insights/${post.slug}`} className="group block w-full">
         <article className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-north-surface border border-north-border rounded-sm p-6 sm:p-8 lg:p-10 transition-all duration-300 hover:border-north-primary">
-          <div className="lg:col-span-7 relative aspect-[16/10] w-full rounded-sm overflow-hidden border border-north-border">
-            <Image
-              src={post.coverImage && post.coverImage.trim() !== "" ? post.coverImage : "/images/hero-studio.jpg"}
+          <div className="lg:col-span-7 relative aspect-[16/10] w-full rounded-sm overflow-hidden border border-north-border bg-north-bg">
+            <SafeImage
+              src={post.coverImage}
               alt={post.title || "Northstar Article"}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 60vw"
+              fallbackTitle={post.title}
             />
-
           </div>
 
           <div className="lg:col-span-5 flex flex-col items-start gap-4">
             <div className="flex items-center gap-3">
-              <Badge variant="accent">{post.category}</Badge>
-              <span className="text-xs text-north-muted font-mono">{post.readTime}</span>
+              {post.category && <Badge variant="accent">{post.category}</Badge>}
+              {post.readTime && <span className="text-xs text-north-muted font-mono">{post.readTime}</span>}
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl text-north-primary font-normal leading-tight group-hover:text-north-muted transition-colors">
-              {post.title}
-            </h2>
+            {post.title && (
+              <h2 className="font-serif text-3xl sm:text-4xl text-north-primary font-normal leading-tight group-hover:text-north-muted transition-colors">
+                {post.title}
+              </h2>
+            )}
 
-            <p className="text-sm sm:text-base text-north-muted leading-relaxed line-clamp-3">
-              {post.excerpt}
-            </p>
+            {post.excerpt && (
+              <p className="text-sm sm:text-base text-north-muted leading-relaxed line-clamp-3">
+                {post.excerpt}
+              </p>
+            )}
 
             <div className="flex items-center gap-3 pt-4 border-t border-north-border w-full mt-2">
-              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-north-border">
-                <Image
-                  src={post.author.avatar}
-                  alt={post.author.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex flex-col text-xs">
-                <span className="font-semibold text-north-primary">{post.author.name}</span>
-                <span className="text-north-muted">{post.publishedAt}</span>
-              </div>
+              {post.author?.name && (
+                <>
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden border border-north-border bg-north-surface">
+                    <SafeImage
+                      src={post.author.avatar}
+                      alt={post.author.name}
+                      fill
+                      className="object-cover"
+                      type="avatar"
+                    />
+                  </div>
+                  <div className="flex flex-col text-xs">
+                    <span className="font-semibold text-north-primary">{post.author.name}</span>
+                    {post.publishedAt && <span className="text-north-muted">{post.publishedAt}</span>}
+                  </div>
+                </>
+              )}
               <ArrowUpRight className="w-5 h-5 ml-auto text-north-primary group-hover:text-north-accent transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </div>
           </div>
@@ -68,31 +77,36 @@ export function PostCard({ post, featured = false }: PostCardProps) {
       <article className="flex flex-col justify-between h-full bg-north-surface/50 border border-north-border rounded-sm p-6 transition-all duration-300 hover:border-north-primary hover:bg-north-surface">
         <div className="flex flex-col gap-4">
           <div className="relative aspect-[16/10] w-full rounded-sm overflow-hidden border border-north-border bg-north-bg">
-            <Image
+            <SafeImage
               src={post.coverImage}
-              alt={post.title}
+              alt={post.title || "Northstar Insight"}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, 33vw"
+              fallbackTitle={post.title}
             />
           </div>
 
           <div className="flex items-center justify-between text-xs text-north-muted">
-            <Badge variant="outline">{post.category}</Badge>
-            <span className="font-mono">{post.readTime}</span>
+            {post.category ? <Badge variant="outline">{post.category}</Badge> : <span />}
+            {post.readTime && <span className="font-mono">{post.readTime}</span>}
           </div>
 
-          <h3 className="font-serif text-xl sm:text-2xl text-north-primary font-normal leading-snug group-hover:text-north-muted transition-colors line-clamp-2 min-h-[3.5rem] sm:min-h-[4rem]">
-            {post.title}
-          </h3>
+          {post.title && (
+            <h3 className="font-serif text-xl sm:text-2xl text-north-primary font-normal leading-snug group-hover:text-north-muted transition-colors line-clamp-2 min-h-[3.5rem] sm:min-h-[4rem]">
+              {post.title}
+            </h3>
+          )}
 
-          <p className="text-sm text-north-muted leading-relaxed line-clamp-2 min-h-[2.5rem]">
-            {post.excerpt}
-          </p>
+          {post.excerpt && (
+            <p className="text-sm text-north-muted leading-relaxed line-clamp-2 min-h-[2.5rem]">
+              {post.excerpt}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-between pt-6 mt-6 border-t border-north-border text-xs text-north-muted">
-          <span>{post.publishedAt}</span>
+          <span>{post.publishedAt || ""}</span>
           <span className="inline-flex items-center gap-1 font-medium text-north-primary group-hover:text-north-accent">
             Read article
             <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -1,18 +1,10 @@
 import { client } from "./client";
+import { sanityFetch } from "./live";
 import * as queries from "./queries";
 import { urlForImage } from "./image";
-import {
-  MOCK_CASE_STUDIES,
-  MOCK_BLOG_POSTS,
-  MOCK_SERVICES,
-  MOCK_TESTIMONIALS,
-  MOCK_STATS,
-  MOCK_TEAM,
-  MOCK_PROCESS,
-} from "@/lib/mock-data";
 import { CaseStudy, BlogPost, Service, Testimonial, Stat } from "@/lib/types";
 
-// Helper to safely convert Sanity image object or fallback string URL
+// Helper to safely convert Sanity image object or string URL without hardcoded fallback images
 export function formatSanityImage(imageField: any, fallbackUrl: string = ""): string {
   if (!imageField) return fallbackUrl;
   if (typeof imageField === "string" && imageField.trim() !== "") return imageField;
@@ -24,7 +16,7 @@ export function formatSanityImage(imageField: any, fallbackUrl: string = ""): st
 }
 
 // ----------------------------------------------------
-// Interfaces & Defaults
+// Interfaces
 // ----------------------------------------------------
 
 export interface NavbarLink {
@@ -48,10 +40,10 @@ export interface HeroButton {
 }
 
 export interface HeroData {
-  label: string;
-  title: string;
-  description: string;
-  buttons: HeroButton[];
+  label?: string;
+  title?: string;
+  description?: string;
+  buttons?: HeroButton[];
   primaryCtaLabel?: string;
   primaryCtaLink?: string;
   secondaryCtaLabel?: string;
@@ -70,19 +62,45 @@ export interface LogoItem {
 }
 
 export interface LogoCloudData {
-  heading: string;
+  heading?: string;
   logos: LogoItem[];
 }
 
+export interface FeaturedWorkSectionData {
+  label?: string;
+  title?: string;
+  description?: string;
+  caseStudies: CaseStudy[];
+}
+
+export interface StatsSectionData {
+  title?: string;
+  description?: string;
+  stats: Stat[];
+}
+
+export interface ServicesSectionData {
+  label?: string;
+  title?: string;
+  description?: string;
+  services: Service[];
+}
+
 export interface ImageTextData {
-  label: string;
-  title: string;
-  paragraphs: string[];
-  featureImage: string;
+  label?: string;
+  title?: string;
+  paragraphs?: string[];
+  featureImage?: string;
   quote?: string;
   quoteAuthor?: string;
   ctaLabel?: string;
   ctaLink?: string;
+}
+
+export interface TestimonialsSectionData {
+  label?: string;
+  title?: string;
+  testimonials: Testimonial[];
 }
 
 export interface ResultMetric {
@@ -92,538 +110,681 @@ export interface ResultMetric {
 }
 
 export interface ResultsData {
-  label: string;
-  title: string;
-  description: string;
-  highlightMetric: string;
-  highlightLabel: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  highlightMetric?: string;
+  highlightLabel?: string;
   metrics: ResultMetric[];
 }
 
-export interface CtaData {
-  label: string;
-  title: string;
-  description: string;
-  primaryButtonLabel: string;
-  primaryButtonLink: string;
-  secondaryButtonLabel: string;
-  secondaryButtonLink: string;
+export interface InsightsSectionData {
+  label?: string;
+  title?: string;
+  description?: string;
+  posts: BlogPost[];
 }
 
-// Defaults
-export const DEFAULT_NAVBAR_DATA: NavbarData = {
-  logoText: "NORTHSTAR",
-  logoLink: "/",
-  links: [
-    { label: "Work", href: "/work" },
-    { label: "Services", href: "/services" },
-    { label: "About", href: "/about" },
-    { label: "Insights", href: "/insights" },
-  ],
-  ctaLabel: "Let's talk",
-  ctaLink: "/contact",
-};
-
-export const DEFAULT_HERO_DATA: HeroData = {
-  label: "DIGITAL PRODUCTS / STRATEGY / EXPERIENCE",
-  title: "We build digital experiences that move businesses forward.",
-  description:
-    "Northstar partners with ambitious companies to design, build and scale digital products that people actually want to use.",
-  buttons: [
-    { label: "View our work", link: "/work", variant: "primary", showArrow: true },
-    { label: "Start a conversation", link: "/contact", variant: "secondary", showArrow: false },
-  ],
-  videoUrl:
-    "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-data-41539-large.mp4",
-  fallbackImage: "/images/hero-studio.jpg",
-  locationLabel: "DESIGN STUDIO / NEW YORK",
-  establishedLabel: "EST. 2014",
-};
-
-export const DEFAULT_LOGO_CLOUD_DATA: LogoCloudData = {
-  heading: "TRUSTED BY INNOVATIVE TEAMS AT LEADING COMPANIES",
-  logos: [
-    { name: "Vercel" },
-    { name: "Stripe" },
-    { name: "Linear" },
-    { name: "Figma" },
-    { name: "Raycast" },
-    { name: "Supabase" },
-  ],
-};
-
-export const DEFAULT_IMAGE_TEXT_DATA: ImageTextData = {
-  label: "OUR PHILOSOPHY",
-  title: "Bridging strategic vision and technical craftsmanship.",
-  paragraphs: [
-    "We believe that exceptional digital products require both editorial restraint and robust software architecture.",
-    "Our multidisciplinary teams partner closely with founders and executive leaders from initial product strategy through post-launch scale.",
-  ],
-  featureImage: "/images/hero-studio.jpg",
-  quote: "Design is not just what it looks like. Design is how it works.",
-  quoteAuthor: "Northstar Design Philosophy",
-  ctaLabel: "Learn more about us",
-  ctaLink: "/about",
-};
-
-export const DEFAULT_RESULTS_DATA: ResultsData = {
-  label: "MEASURABLE IMPACT",
-  title: "Proven results across high-growth product transformations.",
-  description:
-    "We track tangible outcome metrics across user engagement, conversion rates, and engineering velocity.",
-  highlightMetric: "3.4x",
-  highlightLabel: "Average Revenue Growth in 12 Months",
-  metrics: [
-    {
-      value: "99.99%",
-      label: "Uptime Reliability",
-      description: "Architected on cloud-native infrastructure for zero downtime.",
-    },
-    {
-      value: "+210%",
-      label: "User Engagement",
-      description: "Editorial UI polish that increases session duration and adoption.",
-    },
-    {
-      value: "60%",
-      label: "Faster Time to Market",
-      description: "Structured design systems and clean React architecture.",
-    },
-  ],
-};
-
-export const DEFAULT_CTA_DATA: CtaData = {
-  label: "START A PROJECT",
-  title: "Ready to build something extraordinary?",
-  description:
-    "Let's partner to transform your product vision into a world-class digital experience.",
-  primaryButtonLabel: "Start a conversation",
-  primaryButtonLink: "/contact",
-  secondaryButtonLabel: "Explore our work",
-  secondaryButtonLink: "/work",
-};
+export interface CtaData {
+  label?: string;
+  title?: string;
+  description?: string;
+  primaryButtonLabel?: string;
+  primaryButtonLink?: string;
+  secondaryButtonLabel?: string;
+  secondaryButtonLink?: string;
+}
 
 // ----------------------------------------------------
-// Page-wise Singleton Fetchers
+// Page Fetchers (Direct from Sanity without hardcoding)
 // ----------------------------------------------------
 
 export async function getHomepageData() {
-  const [heroData, logoCloudData, imageTextData, resultsData, ctaData] = await Promise.all([
-    getHeroData(),
-    getLogoCloudData(),
-    getImageTextData(),
-    getResultsData(),
-    getCtaData(),
-  ]);
-
-  if (!client) {
-    return { heroData, logoCloudData, imageTextData, resultsData, ctaData };
-  }
-
   try {
-    const data = await client.fetch(queries.homepageQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return { heroData, logoCloudData, imageTextData, resultsData, ctaData };
+    const res = await sanityFetch({
+      query: queries.homepageQuery,
+    });
+    const data: any = res?.data;
+
+    if (!data) {
+      return {
+        heroData: undefined,
+        logoCloudData: undefined,
+        featuredWorkData: undefined,
+        statsData: undefined,
+        servicesSectionData: undefined,
+        imageTextData: undefined,
+        testimonialsSectionData: undefined,
+        resultsData: undefined,
+        insightsSectionData: undefined,
+        ctaData: undefined,
+      };
+    }
+
+    // Map Featured Work case studies directly
+    let featuredCaseStudies: CaseStudy[] = [];
+    if (Array.isArray(data.featuredWork?.selectedCaseStudies) && data.featuredWork.selectedCaseStudies.length > 0) {
+      featuredCaseStudies = data.featuredWork.selectedCaseStudies.map((cs: any) => transformSanityCaseStudy(cs));
+    } else {
+      featuredCaseStudies = await getSanityFeaturedCaseStudies();
+    }
+
+    // Map Stats directly
+    let homeStats: Stat[] = [];
+    if (Array.isArray(data.stats?.stats) && data.stats.stats.length > 0) {
+      homeStats = data.stats.stats.map((s: any, idx: number) => ({
+        id: s._key || `stat-${idx}`,
+        label: s.label || "",
+        value: s.value || "",
+        numericValue: s.numericValue,
+        prefix: s.prefix,
+        suffix: s.suffix,
+        description: s.description || "",
+      }));
+    } else {
+      homeStats = await getSanityStats();
+    }
+
+    // Map Services directly
+    let homeServices: Service[] = [];
+    if (Array.isArray(data.servicesSection?.featuredServices) && data.servicesSection.featuredServices.length > 0) {
+      homeServices = data.servicesSection.featuredServices.map((s: any) => ({
+        id: s.id || s._id,
+        number: s.number || "01",
+        title: s.title || "",
+        subtitle: s.subtitle || "",
+        description: s.description || "",
+        image: formatSanityImage(s.image, ""),
+        capabilities: Array.isArray(s.capabilities) ? s.capabilities : [],
+        deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
+        relatedCaseStudies: [],
+      }));
+    } else {
+      homeServices = await getSanityServices();
+    }
+
+    // Map Testimonials directly
+    let homeTestimonials: Testimonial[] = [];
+    if (Array.isArray(data.testimonialsSection?.selectedTestimonials) && data.testimonialsSection.selectedTestimonials.length > 0) {
+      homeTestimonials = data.testimonialsSection.selectedTestimonials.map((t: any) => ({
+        id: t.id || t._id,
+        quote: t.quote || "",
+        author: t.author || "",
+        role: t.role || "",
+        company: t.company || "",
+        avatar: formatSanityImage(t.avatar, ""),
+        metric: t.metric,
+      }));
+    } else {
+      homeTestimonials = await getSanityTestimonials();
+    }
+
+    // Map Insights posts directly
+    let homePosts: BlogPost[] = [];
+    if (Array.isArray(data.insightsSection?.selectedPosts) && data.insightsSection.selectedPosts.length > 0) {
+      homePosts = data.insightsSection.selectedPosts.map((p: any) => transformSanityBlogPost(p));
+    } else {
+      homePosts = await getSanityFeaturedBlogPosts();
+    }
+
+    // Buttons array or single CTA mapping
+    const buttons: HeroButton[] = Array.isArray(data.hero?.buttons) && data.hero.buttons.length > 0
+      ? data.hero.buttons.map((b: any) => ({
+          label: b.label || "",
+          link: b.link || "#",
+          variant: b.variant === "secondary" ? "secondary" : "primary",
+          showArrow: Boolean(b.showArrow),
+        }))
+      : [];
 
     return {
       heroData: data.hero
         ? {
-            label: data.hero.label || heroData.label,
-            title: data.hero.title || heroData.title,
-            description: data.hero.description || heroData.description,
-            buttons: [
-              {
-                label: data.hero.primaryCtaLabel || "View our work",
-                link: data.hero.primaryCtaLink || "/work",
-                variant: "primary" as const,
-                showArrow: true,
-              },
-              {
-                label: data.hero.secondaryCtaLabel || "Start a conversation",
-                link: data.hero.secondaryCtaLink || "/contact",
-                variant: "secondary" as const,
-                showArrow: false,
-              },
-            ],
-            fallbackImage: formatSanityImage(data.hero.image, heroData.fallbackImage),
-            videoUrl: data.hero.videoUrl || heroData.videoUrl,
+            label: data.hero.label,
+            title: data.hero.title,
+            description: data.hero.description,
+            buttons,
+            primaryCtaLabel: data.hero.primaryCtaLabel,
+            primaryCtaLink: data.hero.primaryCtaLink,
+            secondaryCtaLabel: data.hero.secondaryCtaLabel,
+            secondaryCtaLink: data.hero.secondaryCtaLink,
+            videoUrl: data.hero.videoUrl,
+            fallbackImage: formatSanityImage(data.hero.image, ""),
           }
-        : heroData,
+        : undefined,
+
       logoCloudData: data.logoCloud
         ? {
-            heading: data.logoCloud.heading || logoCloudData.heading,
-            logos: Array.isArray(data.logoCloud.logos) && data.logoCloud.logos.length > 0
+            heading: data.logoCloud.heading,
+            logos: Array.isArray(data.logoCloud.logos)
               ? data.logoCloud.logos.map((l: any) => ({
                   name: l.name || "",
                   logoImage: formatSanityImage(l.logoImage, ""),
                   svgCode: l.svgCode,
                   link: l.link,
                 }))
-              : logoCloudData.logos,
+              : [],
           }
-        : logoCloudData,
+        : undefined,
+
+      featuredWorkData: {
+        label: data.featuredWork?.label,
+        title: data.featuredWork?.title,
+        description: data.featuredWork?.description,
+        caseStudies: featuredCaseStudies,
+      },
+
+      statsData: {
+        title: data.stats?.title,
+        description: data.stats?.description,
+        stats: homeStats,
+      },
+
+      servicesSectionData: {
+        label: data.servicesSection?.label,
+        title: data.servicesSection?.title,
+        description: data.servicesSection?.description,
+        services: homeServices,
+      },
+
       imageTextData: data.imageText
         ? {
-            label: data.imageText.label || imageTextData.label,
-            title: data.imageText.title || imageTextData.title,
-            paragraphs: Array.isArray(data.imageText.paragraphs) && data.imageText.paragraphs.length > 0
-              ? data.imageText.paragraphs
-              : imageTextData.paragraphs,
-            featureImage: formatSanityImage(data.imageText.featureImage, imageTextData.featureImage),
+            label: data.imageText.label,
+            title: data.imageText.title,
+            paragraphs: Array.isArray(data.imageText.paragraphs) ? data.imageText.paragraphs : [],
+            featureImage: formatSanityImage(data.imageText.featureImage, ""),
             quote: data.imageText.quote,
             quoteAuthor: data.imageText.quoteAuthor,
             ctaLabel: data.imageText.ctaLabel,
             ctaLink: data.imageText.ctaLink,
           }
-        : imageTextData,
+        : undefined,
+
+      testimonialsSectionData: {
+        label: data.testimonialsSection?.label,
+        title: data.testimonialsSection?.title,
+        testimonials: homeTestimonials,
+      },
+
       resultsData: data.resultsSection
         ? {
-            label: data.resultsSection.label || resultsData.label,
-            title: data.resultsSection.title || resultsData.title,
-            description: data.resultsSection.description || resultsData.description,
-            highlightMetric: data.resultsSection.highlightMetric || resultsData.highlightMetric,
-            highlightLabel: data.resultsSection.highlightLabel || resultsData.highlightLabel,
-            metrics: Array.isArray(data.resultsSection.metrics) && data.resultsSection.metrics.length > 0
-              ? data.resultsSection.metrics
-              : resultsData.metrics,
+            label: data.resultsSection.label,
+            title: data.resultsSection.title,
+            description: data.resultsSection.description,
+            highlightMetric: data.resultsSection.highlightMetric,
+            highlightLabel: data.resultsSection.highlightLabel,
+            metrics: Array.isArray(data.resultsSection.metrics) ? data.resultsSection.metrics : [],
           }
-        : resultsData,
+        : undefined,
+
+      insightsSectionData: {
+        label: data.insightsSection?.label,
+        title: data.insightsSection?.title,
+        description: data.insightsSection?.description,
+        posts: homePosts,
+      },
+
       ctaData: data.cta
         ? {
-            label: data.cta.label || ctaData.label,
-            title: data.cta.title || ctaData.title,
-            description: data.cta.description || ctaData.description,
-            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
-            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
-            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
-            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+            label: data.cta.label,
+            title: data.cta.title,
+            description: data.cta.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink,
           }
-        : ctaData,
+        : undefined,
     };
-  } catch {
-    return { heroData, logoCloudData, imageTextData, resultsData, ctaData };
+  } catch (error) {
+    console.error("Error fetching homepage data:", error);
+    return {
+      heroData: undefined,
+      logoCloudData: undefined,
+      featuredWorkData: undefined,
+      statsData: undefined,
+      servicesSectionData: undefined,
+      imageTextData: undefined,
+      testimonialsSectionData: undefined,
+      resultsData: undefined,
+      insightsSectionData: undefined,
+      ctaData: undefined,
+    };
   }
 }
 
 export async function getAboutPageData() {
   const ctaData = await getCtaData();
-  const defaultAboutData = {
-    hero: {
-      label: "ABOUT NORTHSTAR",
-      headline: "We are an independent digital agency bridging editorial art direction & software precision.",
-      coverImage: "/images/hero-studio.jpg",
-    },
-    philosophy: {
-      headline: "Built on conviction, restraint, and obsessive craft.",
-      paragraphs: [
-        "Founded in 2014, Northstar was built to offer an alternative to traditional multi-tiered agencies and commodity template factories. We operate as a focused partner for leaders who demand world-class execution.",
-        "We believe that software should be beautiful, fast, and human. We don't build disposable marketing sites — we architect enduring digital assets that elevate market positioning and drive measurable business results.",
-      ],
-    },
-    teamMembers: MOCK_TEAM,
-    processSteps: MOCK_PROCESS,
-    ctaData,
-  };
-
-  if (!client) return defaultAboutData;
 
   try {
-    const data = await client.fetch(queries.aboutPageQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return defaultAboutData;
+    const res = await sanityFetch({ query: queries.aboutPageQuery });
+    const data: any = res?.data;
+
+    if (!data) {
+      return {
+        hero: undefined,
+        philosophy: undefined,
+        statsData: undefined,
+        teamMembers: [],
+        processSteps: [],
+        ctaData,
+      };
+    }
+
+    let statsList: Stat[] = [];
+    if (Array.isArray(data.stats?.stats) && data.stats.stats.length > 0) {
+      statsList = data.stats.stats.map((s: any, idx: number) => ({
+        id: s._key || `stat-${idx}`,
+        label: s.label || "",
+        value: s.value || "",
+        numericValue: s.numericValue,
+        prefix: s.prefix,
+        suffix: s.suffix,
+        description: s.description || "",
+      }));
+    } else {
+      statsList = await getSanityStats();
+    }
 
     return {
-      hero: {
-        label: data.hero?.label || defaultAboutData.hero.label,
-        headline: data.hero?.headline || defaultAboutData.hero.headline,
-        coverImage: formatSanityImage(data.hero?.coverImage, defaultAboutData.hero.coverImage),
+      hero: data.hero
+        ? {
+            label: data.hero.label,
+            headline: data.hero.headline,
+            coverImage: formatSanityImage(data.hero.coverImage, ""),
+          }
+        : undefined,
+      philosophy: data.philosophy
+        ? {
+            headline: data.philosophy.headline,
+            paragraphs: Array.isArray(data.philosophy.paragraphs) ? data.philosophy.paragraphs : [],
+          }
+        : undefined,
+      statsData: {
+        title: data.stats?.title,
+        description: data.stats?.description,
+        stats: statsList,
       },
-      philosophy: {
-        headline: data.philosophy?.headline || defaultAboutData.philosophy.headline,
-        paragraphs: Array.isArray(data.philosophy?.paragraphs) && data.philosophy.paragraphs.length > 0
-          ? data.philosophy.paragraphs
-          : defaultAboutData.philosophy.paragraphs,
-      },
-      teamMembers: Array.isArray(data.teamSection?.members) && data.teamSection.members.length > 0
+      teamMembers: Array.isArray(data.teamSection?.members)
         ? data.teamSection.members.map((m: any) => ({
             id: m.id || m._id,
             name: m.name || "",
             role: m.role || "",
             bio: m.bio || "",
-            image: formatSanityImage(m.image, "/images/avatar-1.jpg"),
+            image: formatSanityImage(m.image, ""),
             websiteUrl: m.websiteUrl,
             linkedinUrl: m.linkedinUrl,
           }))
-        : MOCK_TEAM,
-      processSteps: Array.isArray(data.process?.steps) && data.process.steps.length > 0
-        ? data.process.steps
-        : MOCK_PROCESS,
+        : [],
+      processSteps: Array.isArray(data.process?.steps) ? data.process.steps : [],
       ctaData: data.cta
         ? {
-            label: data.cta.label || ctaData.label,
-            title: data.cta.title || ctaData.title,
-            description: data.cta.description || ctaData.description,
-            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
-            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
-            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
-            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+            label: data.cta.label,
+            title: data.cta.title,
+            description: data.cta.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink,
           }
         : ctaData,
     };
-  } catch {
-    return defaultAboutData;
+  } catch (error) {
+    console.error("Error fetching about page data:", error);
+    return {
+      hero: undefined,
+      philosophy: undefined,
+      statsData: undefined,
+      teamMembers: [],
+      processSteps: [],
+      ctaData,
+    };
   }
 }
 
 export async function getServicesPageData() {
   const ctaData = await getCtaData();
-  const services = await getSanityServices();
-  const defaultServicesData = {
-    hero: {
-      label: "SERVICES & CAPABILITIES",
-      title: "End-to-end digital product design & engineering.",
-      description: "We partner with ambitious teams to turn bold visions into market-defining digital reality. Here is how we help brands design, build, and scale.",
-    },
-    services,
-    processSteps: MOCK_PROCESS,
-    ctaData,
-  };
-
-  if (!client) return defaultServicesData;
 
   try {
-    const data = await client.fetch(queries.servicesPageQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return defaultServicesData;
+    const res = await sanityFetch({ query: queries.servicesPageQuery });
+    const data: any = res?.data;
+
+    const fetchedServices = Array.isArray(data?.servicesSection?.services) && data.servicesSection.services.length > 0
+      ? data.servicesSection.services.map((s: any) => ({
+          id: s.id || s._id,
+          number: s.number || "01",
+          title: s.title || "",
+          subtitle: s.subtitle || "",
+          description: s.description || "",
+          image: formatSanityImage(s.image, ""),
+          capabilities: Array.isArray(s.capabilities) ? s.capabilities : [],
+          deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
+          relatedCaseStudies: [],
+        }))
+      : await getSanityServices();
 
     return {
-      hero: {
-        label: data.hero?.label || defaultServicesData.hero.label,
-        title: data.hero?.title || defaultServicesData.hero.title,
-        description: data.hero?.description || defaultServicesData.hero.description,
-      },
-      services: Array.isArray(data.servicesSection?.services) && data.servicesSection.services.length > 0
-        ? data.servicesSection.services.map((s: any) => ({
-            id: s.id || s._id,
-            number: s.number || "01",
-            title: s.title || "",
-            subtitle: s.subtitle || "",
-            description: s.description || "",
-            image: formatSanityImage(s.image, "/images/hero-studio.jpg"),
-            capabilities: Array.isArray(s.capabilities) ? s.capabilities : [],
-            deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
-            relatedCaseStudies: [],
-          }))
-        : services,
-      processSteps: Array.isArray(data.process?.steps) && data.process.steps.length > 0
-        ? data.process.steps
-        : MOCK_PROCESS,
-      ctaData: data.cta
+      hero: data?.hero
         ? {
-            label: data.cta.label || ctaData.label,
-            title: data.cta.title || ctaData.title,
-            description: data.cta.description || ctaData.description,
-            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
-            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
-            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
-            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+            label: data.hero.label,
+            title: data.hero.title,
+            description: data.hero.description,
+          }
+        : undefined,
+      services: fetchedServices,
+      processSteps: Array.isArray(data?.process?.steps) ? data.process.steps : [],
+      ctaData: data?.cta
+        ? {
+            label: data.cta.label,
+            title: data.cta.title,
+            description: data.cta.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink,
           }
         : ctaData,
     };
-  } catch {
-    return defaultServicesData;
+  } catch (error) {
+    console.error("Error fetching services page data:", error);
+    return {
+      hero: undefined,
+      services: [],
+      processSteps: [],
+      ctaData,
+    };
   }
 }
 
 export async function getWorkPageData() {
   const ctaData = await getCtaData();
-  const caseStudies = await getSanityCaseStudies();
-  const defaultWorkData = {
-    hero: {
-      label: "PORTFOLIO OF WORK",
-      title: "Selected case studies & digital product transformations.",
-      description: "Explore how we have partnered with ambitious companies across industries to solve complex problems and build products people actually want to use.",
-    },
-    categories: [
-      "All",
-      "Fintech Platform",
-      "Digital Healthcare",
-      "E-Commerce",
-      "Developer Tools",
-      "Architecture & Design",
-      "Cloud Infrastructure",
-    ],
-    caseStudies,
-    ctaData,
-  };
-
-  if (!client) return defaultWorkData;
 
   try {
-    const data = await client.fetch(queries.workPageQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return defaultWorkData;
+    const res = await sanityFetch({ query: queries.workPageQuery });
+    const data: any = res?.data;
+    const caseStudies = await getSanityCaseStudies();
 
     return {
-      hero: {
-        label: data.hero?.label || defaultWorkData.hero.label,
-        title: data.hero?.title || defaultWorkData.hero.title,
-        description: data.hero?.description || defaultWorkData.hero.description,
-      },
-      categories: Array.isArray(data.categoriesSection?.categories) && data.categoriesSection.categories.length > 0
-        ? data.categoriesSection.categories
-        : defaultWorkData.categories,
-      caseStudies,
-      ctaData: data.cta
+      hero: data?.hero
         ? {
-            label: data.cta.label || ctaData.label,
-            title: data.cta.title || ctaData.title,
-            description: data.cta.description || ctaData.description,
-            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
-            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
-            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
-            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+            label: data.hero.label,
+            title: data.hero.title,
+            description: data.hero.description,
+          }
+        : undefined,
+      categories: Array.isArray(data?.categoriesSection?.categories) && data.categoriesSection.categories.length > 0
+        ? data.categoriesSection.categories
+        : ["All"],
+      caseStudies,
+      ctaData: data?.cta
+        ? {
+            label: data.cta.label,
+            title: data.cta.title,
+            description: data.cta.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink,
           }
         : ctaData,
     };
-  } catch {
-    return defaultWorkData;
+  } catch (error) {
+    console.error("Error fetching work page data:", error);
+    return {
+      hero: undefined,
+      categories: ["All"],
+      caseStudies: [],
+      ctaData,
+    };
   }
 }
 
 export async function getInsightsPageData() {
   const ctaData = await getCtaData();
-  const blogPosts = await getSanityBlogPosts();
-  const defaultInsightsData = {
-    hero: {
-      label: "INSIGHTS & ESSAYS",
-      title: "Perspectives on digital craft, code and scale.",
-      description: "In-depth articles from our design and engineering team on building products that stand out.",
-    },
-    categories: [
-      "All",
-      "Design Insights",
-      "Engineering Architecture",
-      "Strategy",
-      "Product Growth",
-    ],
-    blogPosts,
-    ctaData,
-  };
-
-  if (!client) return defaultInsightsData;
 
   try {
-    const data = await client.fetch(queries.insightsPageQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return defaultInsightsData;
+    const res = await sanityFetch({ query: queries.insightsPageQuery });
+    const data: any = res?.data;
+    const blogPosts = await getSanityBlogPosts();
 
     return {
-      hero: {
-        label: data.hero?.label || defaultInsightsData.hero.label,
-        title: data.hero?.title || defaultInsightsData.hero.title,
-        description: data.hero?.description || defaultInsightsData.hero.description,
-      },
-      categories: Array.isArray(data.categoriesSection?.categories) && data.categoriesSection.categories.length > 0
-        ? data.categoriesSection.categories
-        : defaultInsightsData.categories,
-      blogPosts,
-      ctaData: data.cta
+      hero: data?.hero
         ? {
-            label: data.cta.label || ctaData.label,
-            title: data.cta.title || ctaData.title,
-            description: data.cta.description || ctaData.description,
-            primaryButtonLabel: data.cta.primaryButtonLabel || ctaData.primaryButtonLabel,
-            primaryButtonLink: data.cta.primaryButtonLink || ctaData.primaryButtonLink,
-            secondaryButtonLabel: data.cta.secondaryButtonLabel || ctaData.secondaryButtonLabel,
-            secondaryButtonLink: data.cta.secondaryButtonLink || ctaData.secondaryButtonLink,
+            label: data.hero.label,
+            title: data.hero.title,
+            description: data.hero.description,
+          }
+        : undefined,
+      categories: Array.isArray(data?.categoriesSection?.categories) && data.categoriesSection.categories.length > 0
+        ? data.categoriesSection.categories
+        : ["All"],
+      blogPosts,
+      ctaData: data?.cta
+        ? {
+            label: data.cta.label,
+            title: data.cta.title,
+            description: data.cta.description,
+            primaryButtonLabel: data.cta.primaryButtonLabel,
+            primaryButtonLink: data.cta.primaryButtonLink,
+            secondaryButtonLabel: data.cta.secondaryButtonLabel,
+            secondaryButtonLink: data.cta.secondaryButtonLink,
           }
         : ctaData,
     };
-  } catch {
-    return defaultInsightsData;
+  } catch (error) {
+    console.error("Error fetching insights page data:", error);
+    return {
+      hero: undefined,
+      categories: ["All"],
+      blogPosts: [],
+      ctaData,
+    };
   }
 }
 
 export async function getContactPageData() {
-  const defaultContactData = {
-    hero: {
-      label: "START A CONVERSATION",
-      title: "Let's build something worth talking about.",
-      description: "Have a project in mind or want to learn more about how Northstar can elevate your product? Tell us about your goals.",
-    },
-    contactInfo: {
-      email: "hello@northstar.agency",
-      address: "540 Broadway, 4th Floor, New York",
-      additionalLocations: "Also in London & Berlin",
-    },
-    formOptions: {
-      projectTypes: [
-        "Digital Strategy",
-        "Brand Experience",
-        "Web Application",
-        "E-Commerce Store",
-        "Design System",
-        "Growth & SEO",
-      ],
-      budgetRanges: ["$25k – $50k", "$50k – $100k", "$100k – $250k", "$250k+"],
-    },
-  };
-
-  if (!client) return defaultContactData;
-
   try {
-    const data = await client.fetch(queries.contactPageQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return defaultContactData;
+    const res = await sanityFetch({ query: queries.contactPageQuery });
+    const data: any = res?.data;
+    if (!data) {
+      return {
+        hero: undefined,
+        contactInfo: undefined,
+        formOptions: undefined,
+      };
+    }
 
     return {
-      hero: {
-        label: data.hero?.label || defaultContactData.hero.label,
-        title: data.hero?.title || defaultContactData.hero.title,
-        description: data.hero?.description || defaultContactData.hero.description,
-      },
-      contactInfo: {
-        email: data.contactInfo?.email || defaultContactData.contactInfo.email,
-        address: data.contactInfo?.address || defaultContactData.contactInfo.address,
-        additionalLocations: data.contactInfo?.additionalLocations || defaultContactData.contactInfo.additionalLocations,
-      },
-      formOptions: {
-        projectTypes: Array.isArray(data.formOptions?.projectTypes) && data.formOptions.projectTypes.length > 0
-          ? data.formOptions.projectTypes
-          : defaultContactData.formOptions.projectTypes,
-        budgetRanges: Array.isArray(data.formOptions?.budgetRanges) && data.formOptions.budgetRanges.length > 0
-          ? data.formOptions.budgetRanges
-          : defaultContactData.formOptions.budgetRanges,
-      },
+      hero: data.hero
+        ? {
+            label: data.hero.label,
+            title: data.hero.title,
+            description: data.hero.description,
+          }
+        : undefined,
+      contactInfo: data.contactInfo
+        ? {
+            email: data.contactInfo.email,
+            address: data.contactInfo.address,
+            additionalLocations: data.contactInfo.additionalLocations,
+          }
+        : undefined,
+      formOptions: data.formOptions
+        ? {
+            projectTypes: Array.isArray(data.formOptions.projectTypes) ? data.formOptions.projectTypes : [],
+            budgetRanges: Array.isArray(data.formOptions.budgetRanges) ? data.formOptions.budgetRanges : [],
+          }
+        : undefined,
     };
-  } catch {
-    return defaultContactData;
+  } catch (error) {
+    console.error("Error fetching contact page data:", error);
+    return {
+      hero: undefined,
+      contactInfo: undefined,
+      formOptions: undefined,
+    };
   }
 }
 
 // ----------------------------------------------------
-// Legacy / Collection Async Fetchers
+// Collections & Individual Fetchers
 // ----------------------------------------------------
 
-export async function getNavbarData(): Promise<NavbarData> {
-  if (!client) return DEFAULT_NAVBAR_DATA;
+export async function getSanityCaseStudies(): Promise<CaseStudy[]> {
   try {
-    const data = await client.fetch(queries.navbarQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return DEFAULT_NAVBAR_DATA;
-    return {
-      logoText: data.logoText || DEFAULT_NAVBAR_DATA.logoText,
-      logoLink: data.logoLink || DEFAULT_NAVBAR_DATA.logoLink,
-      links: Array.isArray(data.links) && data.links.length > 0 ? data.links : DEFAULT_NAVBAR_DATA.links,
-      ctaLabel: data.ctaLabel || DEFAULT_NAVBAR_DATA.ctaLabel,
-      ctaLink: data.ctaLink || DEFAULT_NAVBAR_DATA.ctaLink,
-    };
+    const res = await sanityFetch({ query: queries.caseStudiesQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((item: any) => transformSanityCaseStudy(item));
   } catch {
-    return DEFAULT_NAVBAR_DATA;
+    return [];
   }
 }
 
-export async function getHeroData(): Promise<HeroData> {
-  if (!client) return DEFAULT_HERO_DATA;
+export async function getSanityFeaturedCaseStudies(): Promise<CaseStudy[]> {
   try {
-    const data = await client.fetch(queries.heroQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return DEFAULT_HERO_DATA;
+    const res = await sanityFetch({ query: queries.featuredCaseStudiesQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((item: any) => transformSanityCaseStudy(item));
+  } catch {
+    return [];
+  }
+}
 
-    const imageUrl = formatSanityImage(data.fallbackImage, DEFAULT_HERO_DATA.fallbackImage);
+export async function getSanityCaseStudyBySlug(slug: string): Promise<CaseStudy | undefined> {
+  try {
+    const res = await sanityFetch({
+      query: queries.caseStudyBySlugQuery,
+      params: { slug },
+    });
+    const data: any = res?.data;
+    if (!data) return undefined;
+    return transformSanityCaseStudy(data);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getSanityStats(): Promise<Stat[]> {
+  try {
+    const res = await sanityFetch({ query: queries.statsQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((s: any, idx: number) => ({
+      id: s.id || s._id || `stat-${idx}`,
+      label: s.label || "",
+      value: s.value || "",
+      numericValue: s.numericValue,
+      prefix: s.prefix,
+      suffix: s.suffix,
+      description: s.description || "",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getSanityServices(): Promise<Service[]> {
+  try {
+    const res = await sanityFetch({ query: queries.servicesQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((s: any) => ({
+      id: s.id || s._id,
+      number: s.number || "01",
+      title: s.title || "",
+      subtitle: s.subtitle || "",
+      description: s.description || "",
+      image: formatSanityImage(s.image, s.imageUrl || ""),
+      capabilities: Array.isArray(s.capabilities) ? s.capabilities : [],
+      deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
+      relatedCaseStudies: Array.isArray(s.relatedCaseStudies) ? s.relatedCaseStudies : [],
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getSanityTestimonials(): Promise<Testimonial[]> {
+  try {
+    const res = await sanityFetch({ query: queries.testimonialsQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((t: any) => ({
+      id: t.id || t._id,
+      quote: t.quote || "",
+      author: t.author || "",
+      role: t.role || "",
+      company: t.company || "",
+      avatar: formatSanityImage(t.avatar, t.avatarUrl || ""),
+      metric: t.metric,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getSanityBlogPosts(): Promise<BlogPost[]> {
+  try {
+    const res = await sanityFetch({ query: queries.blogPostsQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((p: any) => transformSanityBlogPost(p));
+  } catch {
+    return [];
+  }
+}
+
+export async function getSanityFeaturedBlogPosts(): Promise<BlogPost[]> {
+  try {
+    const res = await sanityFetch({ query: queries.featuredBlogPostsQuery });
+    const data: any = res?.data;
+    if (!Array.isArray(data)) return [];
+    return data.map((p: any) => transformSanityBlogPost(p));
+  } catch {
+    return [];
+  }
+}
+
+export async function getSanityBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  try {
+    const res = await sanityFetch({
+      query: queries.blogPostBySlugQuery,
+      params: { slug },
+    });
+    const data: any = res?.data;
+    if (!data) return undefined;
+    return transformSanityBlogPost(data);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getNavbarData(): Promise<NavbarData | undefined> {
+  try {
+    const res = await sanityFetch({ query: queries.navbarQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
+    return {
+      logoText: data.logoText || "",
+      logoLink: data.logoLink || "/",
+      links: Array.isArray(data.links) ? data.links : [],
+      ctaLabel: data.ctaLabel || "",
+      ctaLink: data.ctaLink || "/contact",
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getHeroData(): Promise<HeroData | undefined> {
+  try {
+    const res = await sanityFetch({ query: queries.heroQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
+
+    const imageUrl = formatSanityImage(data.fallbackImage, "");
     let buttonsList: HeroButton[] = [];
     if (Array.isArray(data.buttons) && data.buttons.length > 0) {
       buttonsList = data.buttons.map((b: any) => ({
@@ -632,220 +793,100 @@ export async function getHeroData(): Promise<HeroData> {
         variant: b.variant === "secondary" ? "secondary" : "primary",
         showArrow: Boolean(b.showArrow),
       }));
-    } else {
-      buttonsList = DEFAULT_HERO_DATA.buttons;
     }
 
     return {
-      label: data.label !== undefined ? data.label : DEFAULT_HERO_DATA.label,
-      title: data.title || DEFAULT_HERO_DATA.title,
-      description: data.description !== undefined ? data.description : DEFAULT_HERO_DATA.description,
+      label: data.label,
+      title: data.title,
+      description: data.description,
       buttons: buttonsList,
-      videoUrl: data.videoUrl !== undefined ? data.videoUrl : DEFAULT_HERO_DATA.videoUrl,
+      videoUrl: data.videoUrl,
       fallbackImage: imageUrl,
       locationLabel: data.locationLabel,
       establishedLabel: data.establishedLabel,
     };
   } catch {
-    return DEFAULT_HERO_DATA;
+    return undefined;
   }
 }
 
-export async function getLogoCloudData(): Promise<LogoCloudData> {
-  if (!client) return DEFAULT_LOGO_CLOUD_DATA;
+export async function getLogoCloudData(): Promise<LogoCloudData | undefined> {
   try {
-    const data = await client.fetch(queries.logoCloudQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return DEFAULT_LOGO_CLOUD_DATA;
-    const logos = Array.isArray(data.logos) && data.logos.length > 0
+    const res = await sanityFetch({ query: queries.logoCloudQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
+    const logos = Array.isArray(data.logos)
       ? data.logos.map((item: any) => ({
           name: item.name || "",
           logoImage: formatSanityImage(item.logoImage, ""),
           svgCode: item.svgCode,
           link: item.link,
         }))
-      : DEFAULT_LOGO_CLOUD_DATA.logos;
+      : [];
 
     return {
-      heading: data.heading || DEFAULT_LOGO_CLOUD_DATA.heading,
+      heading: data.heading,
       logos,
     };
   } catch {
-    return DEFAULT_LOGO_CLOUD_DATA;
+    return undefined;
   }
 }
 
-export async function getImageTextData(): Promise<ImageTextData> {
-  if (!client) return DEFAULT_IMAGE_TEXT_DATA;
+export async function getImageTextData(): Promise<ImageTextData | undefined> {
   try {
-    const data = await client.fetch(queries.imageTextQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return DEFAULT_IMAGE_TEXT_DATA;
+    const res = await sanityFetch({ query: queries.imageTextQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
     return {
-      label: data.label !== undefined ? data.label : DEFAULT_IMAGE_TEXT_DATA.label,
-      title: data.title || DEFAULT_IMAGE_TEXT_DATA.title,
-      paragraphs: Array.isArray(data.paragraphs) && data.paragraphs.length > 0 ? data.paragraphs : DEFAULT_IMAGE_TEXT_DATA.paragraphs,
-      featureImage: formatSanityImage(data.featureImage, data.featureImageUrl || DEFAULT_IMAGE_TEXT_DATA.featureImage),
+      label: data.label,
+      title: data.title,
+      paragraphs: Array.isArray(data.paragraphs) ? data.paragraphs : [],
+      featureImage: formatSanityImage(data.featureImage, data.featureImageUrl || ""),
       quote: data.quote,
       quoteAuthor: data.quoteAuthor,
       ctaLabel: data.ctaLabel,
       ctaLink: data.ctaLink,
     };
   } catch {
-    return DEFAULT_IMAGE_TEXT_DATA;
+    return undefined;
   }
 }
 
-export async function getResultsData(): Promise<ResultsData> {
-  if (!client) return DEFAULT_RESULTS_DATA;
+export async function getResultsData(): Promise<ResultsData | undefined> {
   try {
-    const data = await client.fetch(queries.resultsQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return DEFAULT_RESULTS_DATA;
+    const res = await sanityFetch({ query: queries.resultsQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
     return {
-      label: data.label || DEFAULT_RESULTS_DATA.label,
-      title: data.title || DEFAULT_RESULTS_DATA.title,
-      description: data.description || DEFAULT_RESULTS_DATA.description,
-      highlightMetric: data.highlightMetric || DEFAULT_RESULTS_DATA.highlightMetric,
-      highlightLabel: data.highlightLabel || DEFAULT_RESULTS_DATA.highlightLabel,
-      metrics: Array.isArray(data.metrics) && data.metrics.length > 0 ? data.metrics : DEFAULT_RESULTS_DATA.metrics,
+      label: data.label,
+      title: data.title,
+      description: data.description,
+      highlightMetric: data.highlightMetric,
+      highlightLabel: data.highlightLabel,
+      metrics: Array.isArray(data.metrics) ? data.metrics : [],
     };
   } catch {
-    return DEFAULT_RESULTS_DATA;
+    return undefined;
   }
 }
 
-export async function getCtaData(): Promise<CtaData> {
-  if (!client) return DEFAULT_CTA_DATA;
+export async function getCtaData(): Promise<CtaData | undefined> {
   try {
-    const data = await client.fetch(queries.ctaQuery, {}, { next: { revalidate: 0 } });
-    if (!data) return DEFAULT_CTA_DATA;
+    const res = await sanityFetch({ query: queries.ctaQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
     return {
-      label: data.label || DEFAULT_CTA_DATA.label,
-      title: data.title || DEFAULT_CTA_DATA.title,
-      description: data.description || DEFAULT_CTA_DATA.description,
-      primaryButtonLabel: data.primaryButtonLabel || DEFAULT_CTA_DATA.primaryButtonLabel,
-      primaryButtonLink: data.primaryButtonLink || DEFAULT_CTA_DATA.primaryButtonLink,
-      secondaryButtonLabel: data.secondaryButtonLabel || DEFAULT_CTA_DATA.secondaryButtonLabel,
-      secondaryButtonLink: data.secondaryButtonLink || DEFAULT_CTA_DATA.secondaryButtonLink,
+      label: data.label,
+      title: data.title,
+      description: data.description,
+      primaryButtonLabel: data.primaryButtonLabel,
+      primaryButtonLink: data.primaryButtonLink,
+      secondaryButtonLabel: data.secondaryButtonLabel,
+      secondaryButtonLink: data.secondaryButtonLink,
     };
   } catch {
-    return DEFAULT_CTA_DATA;
-  }
-}
-
-// Collections Fetchers
-export async function getSanityCaseStudies(): Promise<CaseStudy[]> {
-  if (!client) return MOCK_CASE_STUDIES;
-  try {
-    const data = await client.fetch(queries.caseStudiesQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_CASE_STUDIES;
-    return data.map((item: any) => transformSanityCaseStudy(item));
-  } catch {
-    return MOCK_CASE_STUDIES;
-  }
-}
-
-export async function getSanityFeaturedCaseStudies(): Promise<CaseStudy[]> {
-  if (!client) return MOCK_CASE_STUDIES.filter((cs) => cs.featured);
-  try {
-    const data = await client.fetch(queries.featuredCaseStudiesQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_CASE_STUDIES.filter((cs) => cs.featured);
-    return data.map((item: any) => transformSanityCaseStudy(item));
-  } catch {
-    return MOCK_CASE_STUDIES.filter((cs) => cs.featured);
-  }
-}
-
-export async function getSanityCaseStudyBySlug(slug: string): Promise<CaseStudy | undefined> {
-  if (!client) return MOCK_CASE_STUDIES.find((cs) => cs.slug === slug);
-  try {
-    const data = await client.fetch(queries.caseStudyBySlugQuery, { slug }, { next: { revalidate: 0 } });
-    if (!data) return MOCK_CASE_STUDIES.find((cs) => cs.slug === slug);
-    return transformSanityCaseStudy(data);
-  } catch {
-    return MOCK_CASE_STUDIES.find((cs) => cs.slug === slug);
-  }
-}
-
-export async function getSanityStats(): Promise<Stat[]> {
-  if (!client) return MOCK_STATS;
-  try {
-    const data = await client.fetch(queries.statsQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_STATS;
-    return data;
-  } catch {
-    return MOCK_STATS;
-  }
-}
-
-export async function getSanityServices(): Promise<Service[]> {
-  if (!client) return MOCK_SERVICES;
-  try {
-    const data = await client.fetch(queries.servicesQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_SERVICES;
-    return data.map((s: any) => ({
-      id: s.id || s._id,
-      number: s.number || "01",
-      title: s.title || "",
-      subtitle: s.subtitle || "",
-      description: s.description || "",
-      image: formatSanityImage(s.image, s.imageUrl || "/images/hero-studio.jpg"),
-      capabilities: Array.isArray(s.capabilities) ? s.capabilities : [],
-      deliverables: Array.isArray(s.deliverables) ? s.deliverables : [],
-      relatedCaseStudies: Array.isArray(s.relatedCaseStudies) ? s.relatedCaseStudies : [],
-    }));
-  } catch {
-    return MOCK_SERVICES;
-  }
-}
-
-export async function getSanityTestimonials(): Promise<Testimonial[]> {
-  if (!client) return MOCK_TESTIMONIALS;
-  try {
-    const data = await client.fetch(queries.testimonialsQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_TESTIMONIALS;
-    return data.map((t: any) => ({
-      id: t.id || t._id,
-      quote: t.quote || "",
-      author: t.author || "",
-      role: t.role || "",
-      company: t.company || "",
-      avatar: formatSanityImage(t.avatar, t.avatarUrl || "/images/avatar-1.jpg"),
-      metric: t.metric,
-    }));
-  } catch {
-    return MOCK_TESTIMONIALS;
-  }
-}
-
-export async function getSanityBlogPosts(): Promise<BlogPost[]> {
-  if (!client) return MOCK_BLOG_POSTS;
-  try {
-    const data = await client.fetch(queries.blogPostsQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_BLOG_POSTS;
-    return data.map((p: any) => transformSanityBlogPost(p));
-  } catch {
-    return MOCK_BLOG_POSTS;
-  }
-}
-
-export async function getSanityFeaturedBlogPosts(): Promise<BlogPost[]> {
-  if (!client) return MOCK_BLOG_POSTS.filter((p) => p.featured);
-  try {
-    const data = await client.fetch(queries.featuredBlogPostsQuery, {}, { next: { revalidate: 0 } });
-    if (!Array.isArray(data) || data.length === 0) return MOCK_BLOG_POSTS.filter((p) => p.featured);
-    return data.map((p: any) => transformSanityBlogPost(p));
-  } catch {
-    return MOCK_BLOG_POSTS.filter((p) => p.featured);
-  }
-}
-
-export async function getSanityBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-  if (!client) return MOCK_BLOG_POSTS.find((p) => p.slug === slug);
-  try {
-    const data = await client.fetch(queries.blogPostBySlugQuery, { slug }, { next: { revalidate: 0 } });
-    if (!data) return MOCK_BLOG_POSTS.find((p) => p.slug === slug);
-    return transformSanityBlogPost(data);
-  } catch {
-    return MOCK_BLOG_POSTS.find((p) => p.slug === slug);
+    return undefined;
   }
 }
 
@@ -854,32 +895,38 @@ export async function getSanityBlogPostBySlug(slug: string): Promise<BlogPost | 
 // ----------------------------------------------------
 
 function transformSanityCaseStudy(item: any): CaseStudy {
-  const fallback = MOCK_CASE_STUDIES[0];
-  const gallery = Array.isArray(item.galleryImages)
-    ? item.galleryImages.map((img: any) => formatSanityImage(img, ""))
-    : fallback.galleryImages;
+  const gallery = Array.isArray(item?.galleryImages)
+    ? item.galleryImages.map((img: any) => formatSanityImage(img, "")).filter(Boolean)
+    : [];
+
+  const rawStats = Array.isArray(item?.stats) ? item.stats : [];
+  const statsList = rawStats.map((s: any) => ({
+    value: s.value || "",
+    label: s.label || "",
+    description: s.description || "",
+  }));
 
   return {
     id: item.id || item._id,
-    slug: item.slug || fallback.slug,
-    title: item.title || fallback.title,
-    client: item.client || fallback.client,
-    category: item.category || fallback.category,
-    year: item.year || fallback.year,
-    summary: item.summary || fallback.summary,
-    coverImage: formatSanityImage(item.coverImage, item.coverImageUrl || fallback.coverImage),
-    heroImage: formatSanityImage(item.heroImage, item.heroImageUrl || fallback.heroImage),
+    slug: item.slug || "",
+    title: item.title || "",
+    client: item.client || "",
+    category: item.category || "",
+    year: item.year || "",
+    summary: item.summary || "",
+    coverImage: formatSanityImage(item.coverImage, item.coverImageUrl || ""),
+    heroImage: formatSanityImage(item.heroImage, item.heroImageUrl || ""),
     videoUrl: item.videoUrl,
-    challenge: item.challenge || fallback.challenge,
-    approach: item.approach || fallback.approach,
-    solution: item.solution || fallback.solution,
+    challenge: item.challenge || "",
+    approach: item.approach || "",
+    solution: item.solution || "",
     results: {
-      highlightMetric: item.resultsSummary ? "" : fallback.results.highlightMetric,
-      highlightLabel: fallback.results.highlightLabel,
-      summary: item.resultsSummary || fallback.results.summary,
-      stats: Array.isArray(item.stats) && item.stats.length > 0 ? item.stats : fallback.results.stats,
+      highlightMetric: "",
+      highlightLabel: "",
+      summary: item.resultsSummary || "",
+      stats: statsList,
     },
-    galleryImages: gallery.filter(Boolean),
+    galleryImages: gallery,
     testimonial: item.testimonialQuote
       ? {
           quote: item.testimonialQuote,
@@ -887,37 +934,36 @@ function transformSanityCaseStudy(item: any): CaseStudy {
           role: item.testimonialRole || "",
           company: item.testimonialCompany || "",
         }
-      : fallback.testimonial,
-    relatedSlugs: Array.isArray(item.relatedSlugs) ? item.relatedSlugs : fallback.relatedSlugs,
+      : undefined,
+    relatedSlugs: Array.isArray(item.relatedSlugs) ? item.relatedSlugs : [],
     liveUrl: item.liveUrl,
     featured: Boolean(item.featured),
   };
 }
 
 function transformSanityBlogPost(item: any): BlogPost {
-  const fallback = MOCK_BLOG_POSTS[0];
   return {
     id: item.id || item._id,
-    slug: item.slug || fallback.slug,
-    title: item.title || fallback.title,
-    category: item.category || fallback.category,
-    publishedAt: item.publishedAt || fallback.publishedAt,
-    readTime: item.readTime || fallback.readTime,
-    excerpt: item.excerpt || fallback.excerpt,
-    coverImage: formatSanityImage(item.coverImage, item.coverImageUrl || fallback.coverImage),
+    slug: item.slug || "",
+    title: item.title || "",
+    category: item.category || "",
+    publishedAt: item.publishedAt || "",
+    readTime: item.readTime || "",
+    excerpt: item.excerpt || "",
+    coverImage: formatSanityImage(item.coverImage, item.coverImageUrl || ""),
     author: {
-      name: item.authorName || fallback.author.name,
-      role: item.authorRole || fallback.author.role,
-      avatar: formatSanityImage(item.authorAvatar, item.authorAvatarUrl || fallback.author.avatar),
-      bio: item.authorBio || fallback.author.bio,
+      name: item.authorName || "",
+      role: item.authorRole || "",
+      avatar: formatSanityImage(item.authorAvatar, item.authorAvatarUrl || ""),
+      bio: item.authorBio || "",
     },
     content: {
-      introduction: item.introduction || fallback.content.introduction,
-      headings: Array.isArray(item.headings) && item.headings.length > 0 ? item.headings : fallback.content.headings,
-      conclusion: item.conclusion || fallback.content.conclusion,
-      keyTakeaway: item.keyTakeaway || fallback.content.keyTakeaway,
+      introduction: item.introduction || "",
+      headings: Array.isArray(item.headings) ? item.headings : [],
+      conclusion: item.conclusion || "",
+      keyTakeaway: item.keyTakeaway,
     },
-    relatedSlugs: Array.isArray(item.relatedSlugs) ? item.relatedSlugs : fallback.relatedSlugs,
+    relatedSlugs: Array.isArray(item.relatedSlugs) ? item.relatedSlugs : [],
     featured: Boolean(item.featured),
   };
 }

@@ -14,20 +14,30 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const { heroData, logoCloudData, imageTextData, resultsData, ctaData } =
-    await getHomepageData();
+  const {
+    heroData,
+    logoCloudData,
+    featuredWorkData,
+    statsData,
+    servicesSectionData,
+    imageTextData,
+    testimonialsSectionData,
+    resultsData,
+    insightsSectionData,
+    ctaData,
+  } = await getHomepageData();
 
   return (
     <>
       <Hero data={heroData} />
       <LogoCloud data={logoCloudData} />
-      <FeaturedWork />
-      <Stats />
-      <Services />
+      <FeaturedWork data={featuredWorkData} />
+      <Stats data={statsData} />
+      <Services data={servicesSectionData} />
       <ImageText data={imageTextData} />
-      <Testimonial />
+      <Testimonial data={testimonialsSectionData} />
       <Results data={resultsData} />
-      <Insights />
+      <Insights data={insightsSectionData} />
       <CTA data={ctaData} />
     </>
   );
