@@ -135,6 +135,16 @@ export interface CtaData {
   secondaryButtonLink?: string;
 }
 
+export interface SiteSettingsData {
+  siteTitle?: string;
+  logoText?: string;
+  contactEmail?: string;
+  navLinks?: { label: string; href: string }[];
+  headerCtaLabel?: string;
+  headerCtaLink?: string;
+  footerCopyright?: string;
+}
+
 // ----------------------------------------------------
 // Page Fetchers (Direct from Sanity without hardcoding)
 // ----------------------------------------------------
@@ -884,6 +894,25 @@ export async function getCtaData(): Promise<CtaData | undefined> {
       primaryButtonLink: data.primaryButtonLink,
       secondaryButtonLabel: data.secondaryButtonLabel,
       secondaryButtonLink: data.secondaryButtonLink,
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getSiteSettingsData(): Promise<SiteSettingsData | undefined> {
+  try {
+    const res = await sanityFetch({ query: queries.siteSettingsQuery });
+    const data: any = res?.data;
+    if (!data) return undefined;
+    return {
+      siteTitle: data.siteTitle,
+      logoText: data.logoText,
+      contactEmail: data.contactEmail,
+      navLinks: Array.isArray(data.navLinks) ? data.navLinks : [],
+      headerCtaLabel: data.headerCtaLabel,
+      headerCtaLink: data.headerCtaLink,
+      footerCopyright: data.footerCopyright,
     };
   } catch {
     return undefined;

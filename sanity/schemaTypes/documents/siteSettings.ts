@@ -9,6 +9,7 @@ export const siteSettingsType = defineType({
   fields: [
     defineField({ name: "siteTitle", title: "Global Site Title", type: "string", initialValue: "Northstar Agency" }),
     defineField({ name: "logoText", title: "Navbar Brand Logo Text", type: "string", initialValue: "NORTHSTAR" }),
+    defineField({ name: "contactEmail", title: "Global Contact Email", type: "string", initialValue: "hitanshumehta2004@gmail.com" }),
     defineField({
       name: "navLinks",
       title: "Header Navigation Links",
@@ -25,6 +26,6 @@ export const siteSettingsType = defineType({
     }),
     defineField({ name: "headerCtaLabel", title: "Header CTA Button Label", type: "string", initialValue: "Start a project" }),
     defineField({ name: "headerCtaLink", title: "Header CTA Button Target URL", type: "string", initialValue: "/contact" }),
-    defineField({ name: "footerCopyright", title: "Footer Copyright Notice", type: "string", initialValue: "© 2026 Northstar Digital Agency. All rights reserved." }),
+    defineField({ name: "footerCopyright", title: "Footer Copyright Notice", type: "string", initialValue: "© 2026 NORTHSTAR AGENCY INC. ALL RIGHTS RESERVED." }),
   ],
 });

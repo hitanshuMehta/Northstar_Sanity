@@ -6,12 +6,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "../ui/Container";
 import { ArrowUpRight, Check } from "lucide-react";
 
-export function Footer() {
+interface FooterProps {
+  email?: string;
+  copyrightNotice?: string;
+}
+
+export function Footer({
+  email = "hitanshumehta2004@gmail.com",
+  copyrightNotice = "© 2026 NORTHSTAR AGENCY INC. ALL RIGHTS RESERVED.",
+}: FooterProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigator.clipboard.writeText("hello@northstar.agency");
+    navigator.clipboard.writeText(email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -26,7 +34,7 @@ export function Footer() {
       </div>
 
       <Container className="relative z-10">
-        {/* Upper Big Editorial Headline with Stagger Entrance */}
+        {/* Upper Big Editorial Headline */}
         <div className="border-b border-north-border pb-16 mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
             <motion.div
@@ -34,7 +42,7 @@ export function Footer() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="lg:col-span-8"
+              className="lg:col-span-7"
             >
               <div className="flex items-center gap-2 mb-4">
                 <span className="w-2 h-2 rounded-full bg-north-accent animate-pulse" />
@@ -58,17 +66,17 @@ export function Footer() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="lg:col-span-4 flex lg:justify-end"
+              className="lg:col-span-5 flex lg:justify-end"
             >
               <div className="relative">
                 <button
                   onClick={handleCopyEmail}
-                  className="group relative inline-flex items-center gap-4 px-6 py-4 rounded-full bg-north-bg border border-north-border hover:border-north-accent hover:bg-north-accent hover:text-north-bg transition-all duration-500 shadow-xl cursor-pointer"
+                  className="group relative inline-flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-3.5 sm:py-4 rounded-full bg-north-bg border border-north-border hover:border-north-accent hover:bg-north-accent hover:text-north-bg transition-all duration-500 shadow-xl cursor-pointer"
                 >
-                  <span className="text-base sm:text-lg font-mono font-bold tracking-tight">
-                    hello@northstar.agency
+                  <span className="text-sm sm:text-base font-mono font-bold tracking-tight truncate max-w-[240px] sm:max-w-none">
+                    {email}
                   </span>
-                  <span className="p-2.5 rounded-full bg-north-surface border border-north-border group-hover:bg-north-bg group-hover:border-north-bg text-north-primary transition-all duration-300">
+                  <span className="p-2 sm:p-2.5 rounded-full bg-north-surface border border-north-border group-hover:bg-north-bg group-hover:border-north-bg text-north-primary transition-all duration-300 flex-shrink-0">
                     {copied ? (
                       <Check className="w-4 h-4 text-north-accent group-hover:text-north-primary" />
                     ) : (
@@ -114,7 +122,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Navigation Links with Hover Slide Effect */}
+          {/* Navigation Links */}
           <div className="lg:col-span-3">
             <h4 className="text-xs font-mono font-semibold tracking-widest uppercase text-north-muted mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-north-accent" />
@@ -164,44 +172,44 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Office Locations with Live Status Pulsing Dots */}
+          {/* Office Locations (Sample / Demo Data) */}
           <div className="lg:col-span-2">
             <h4 className="text-xs font-mono font-semibold tracking-widest uppercase text-north-muted mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-north-accent" />
-              OFFICES
+              OFFICES (SAMPLE DATA)
             </h4>
             <div className="space-y-5 text-xs text-north-muted">
               <div>
                 <span className="font-semibold text-north-primary flex items-center gap-1.5 mb-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-north-accent animate-pulse" />
-                  NEW YORK
+                  NEW YORK (DEMO)
                 </span>
-                <span>540 Broadway, 4th Fl</span>
+                <span>100 Innovation Plaza, NY (Sample)</span>
               </div>
               <div>
                 <span className="font-semibold text-north-primary flex items-center gap-1.5 mb-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-north-accent" />
-                  LONDON
+                  LONDON (DEMO)
                 </span>
-                <span>25 Broadwick St, Soho</span>
+                <span>25 Broadwick St, Soho (Sample)</span>
               </div>
               <div>
                 <span className="font-semibold text-north-primary flex items-center gap-1.5 mb-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-north-accent" />
-                  BERLIN
+                  BERLIN (DEMO)
                 </span>
-                <span>Torstraße 177, Mitte</span>
+                <span>Torstraße 177, Mitte (Sample)</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Legal & Copyright */}
+        {/* Bottom Legal & Copyright Notice */}
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-north-muted gap-4">
-          <p>© {new Date().getFullYear()} NORTHSTAR AGENCY INC. ALL RIGHTS RESERVED.</p>
+          <p className="font-mono tracking-wide uppercase">{copyrightNotice}</p>
           <div className="flex items-center gap-6 font-mono text-[11px]">
             <span className="hover:text-north-primary transition-colors">Built with Next.js & Framer Motion</span>
-            <span className="hover:text-north-primary transition-colors">CMS Ready</span>
+            <span className="hover:text-north-primary transition-colors">Sanity CMS Live</span>
           </div>
         </div>
       </Container>

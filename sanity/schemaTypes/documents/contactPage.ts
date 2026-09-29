@@ -48,9 +48,9 @@ export const contactPageType = defineType({
       type: "object",
       group: "info",
       fields: [
-        defineField({ name: "email", title: "Contact Email Address", type: "string", initialValue: "hello@northstar.agency" }),
-        defineField({ name: "address", title: "Headquarters Address", type: "string", initialValue: "540 Broadway, 4th Floor, New York" }),
-        defineField({ name: "additionalLocations", title: "Additional Locations Subtitle", type: "string", initialValue: "Also in London & Berlin" }),
+        defineField({ name: "email", title: "Contact Email Address", type: "string", initialValue: "hitanshumehta2004@gmail.com" }),
+        defineField({ name: "address", title: "Headquarters Address", type: "string", initialValue: "100 Innovation Plaza, Suite 400, New York, NY (Demo Studio Address)" }),
+        defineField({ name: "additionalLocations", title: "Additional Locations Subtitle", type: "string", initialValue: "Sample Virtual Offices in London & Berlin" }),
       ],
     }),
 

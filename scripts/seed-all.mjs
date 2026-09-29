@@ -73,6 +73,7 @@ async function seedAll() {
     _id: "siteSettings",
     siteTitle: "Northstar Agency",
     logoText: "NORTHSTAR",
+    contactEmail: "hitanshumehta2004@gmail.com",
     navLinks: [
       { _key: "n1", label: "Work", href: "/work" },
       { _key: "n2", label: "Services", href: "/services" },
@@ -81,7 +82,7 @@ async function seedAll() {
     ],
     headerCtaLabel: "Start a project",
     headerCtaLink: "/contact",
-    footerCopyright: "© 2026 Northstar Digital Agency. All rights reserved.",
+    footerCopyright: "© 2026 NORTHSTAR AGENCY INC. ALL RIGHTS RESERVED.",
   });
 
   await client.createOrReplace({
@@ -763,9 +764,9 @@ async function seedAll() {
       description: "Have a project in mind or want to learn more about how Northstar can elevate your product? Tell us about your goals.",
     },
     contactInfo: {
-      email: "hello@northstar.agency",
-      address: "540 Broadway, 4th Floor, New York",
-      additionalLocations: "Also in London & Berlin",
+      email: "hitanshumehta2004@gmail.com",
+      address: "100 Innovation Plaza, Suite 400, New York, NY (Demo Studio Address)",
+      additionalLocations: "Sample Virtual Offices in London & Berlin",
     },
     formOptions: {
       projectTypes: [

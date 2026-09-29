@@ -334,6 +334,7 @@ export const siteSettingsQuery = groq`
     _id,
     siteTitle,
     logoText,
+    contactEmail,
     navLinks[] {
       label,
       href
