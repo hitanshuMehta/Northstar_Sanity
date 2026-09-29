@@ -6,7 +6,7 @@ import { groq } from "next-sanity";
 
 // Homepage Singleton Query
 export const homepageQuery = groq`
-  *[_type == "homepage" && (_id == "homepage" || _id == "drafts.homepage")][0] {
+  *[_type == "homepage"][0] {
     _id,
     hero {
       label,
@@ -135,7 +135,7 @@ export const homepageQuery = groq`
 
 // About Page Singleton Query
 export const aboutPageQuery = groq`
-  *[_type == "aboutPage" && (_id == "aboutPage" || _id == "drafts.aboutPage")][0] {
+  *[_type == "aboutPage"][0] {
     _id,
     hero {
       label,
@@ -199,7 +199,7 @@ export const aboutPageQuery = groq`
 
 // Services Page Singleton Query
 export const servicesPageQuery = groq`
-  *[_type == "servicesPage" && (_id == "servicesPage" || _id == "drafts.servicesPage")][0] {
+  *[_type == "servicesPage"][0] {
     _id,
     hero {
       label,
@@ -250,7 +250,7 @@ export const servicesPageQuery = groq`
 
 // Work Page Singleton Query
 export const workPageQuery = groq`
-  *[_type == "workPage" && (_id == "workPage" || _id == "drafts.workPage")][0] {
+  *[_type == "workPage"][0] {
     _id,
     hero {
       label,
@@ -274,7 +274,7 @@ export const workPageQuery = groq`
 
 // Insights Page Singleton Query
 export const insightsPageQuery = groq`
-  *[_type == "insightsPage" && (_id == "insightsPage" || _id == "drafts.insightsPage")][0] {
+  *[_type == "insightsPage"][0] {
     _id,
     hero {
       label,
@@ -309,7 +309,7 @@ export const insightsPageQuery = groq`
 
 // Contact Page Singleton Query
 export const contactPageQuery = groq`
-  *[_type == "contactPage" && (_id == "contactPage" || _id == "drafts.contactPage")][0] {
+  *[_type == "contactPage"][0] {
     _id,
     hero {
       label,
@@ -330,7 +330,7 @@ export const contactPageQuery = groq`
 
 // Global Site Settings Query
 export const siteSettingsQuery = groq`
-  *[_type == "siteSettings" && (_id == "siteSettings" || _id == "drafts.siteSettings")][0] {
+  *[_type == "siteSettings"][0] {
     _id,
     siteTitle,
     logoText,

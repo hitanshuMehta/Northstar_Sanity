@@ -2,6 +2,8 @@ import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SanityLive } from "@/sanity/lib/live";
+import { DraftVisualEditing } from "@/components/DraftVisualEditing";
+import { draftMode } from "next/headers";
 import { getSiteSettingsData } from "@/sanity/lib/fetch";
 
 export default async function SiteLayout({
@@ -10,6 +12,7 @@ export default async function SiteLayout({
   children: React.ReactNode;
 }) {
   const siteSettings = await getSiteSettingsData();
+  const { isEnabled: isDraftMode } = await draftMode();
 
   return (
     <Providers>
@@ -19,7 +22,9 @@ export default async function SiteLayout({
         email={siteSettings?.contactEmail}
         copyrightNotice={siteSettings?.footerCopyright}
       />
-      <SanityLive />
+      {/* Only run real-time live preview listeners when in Draft Mode (Presentation Tool) */}
+      {isDraftMode && <SanityLive />}
+      {isDraftMode && <DraftVisualEditing />}
     </Providers>
   );
 }
